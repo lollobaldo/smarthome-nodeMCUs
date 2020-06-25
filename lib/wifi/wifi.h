@@ -7,7 +7,9 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-extern WiFiClient wifiClient;
+namespace wifi {
+    extern WiFiClient client;
 
-void wifiSetup(const char* hostname);
-void wifiLoop();
+    void setup(const char* hostname);
+    void loop();
+}

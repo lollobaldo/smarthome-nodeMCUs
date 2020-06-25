@@ -13,9 +13,6 @@ using namespace std;
     #define MQTT_PSW "(MQTT_PSW not defined)"
 #endif
 
-using namespace mqtt;
-
-// Needs namespace prefix to fix unbiguities?
 namespace mqtt {
     const char* server = "mqtt.flespi.io";
     const int port = 1883;
@@ -33,7 +30,7 @@ namespace mqtt {
     byte willQoS = 0;
     boolean willRetain = true;
 
-    PubSubClient client(wifiClient);
+    PubSubClient client(wifi::client);
 
     boolean connect() {
         return client.connect(name, user, password, willTopic, willQoS, willRetain, willMessage);
@@ -75,5 +72,4 @@ namespace mqtt {
         }
         client.loop();
     }
-
 }

@@ -31,13 +31,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
     payload++;
     DebugPrintln("Inside fnc_ColorChange attempted to change color");
     // Get rid of '#' and convert it to integer
-    const char* trial = "ff0000";
-    DebugPrintln(trial);
     payload[6] = '\0';
     DebugPrintln((char*)payload);
-    long number0 = strtol(trial, NULL, 16);
-    DebugPrint("Converting to long: ");
-    DebugPrintln(number0);
     long number = strtol((char*)payload, NULL, 16);
     DebugPrint("Converting to long: ");
     DebugPrintln(number);
@@ -69,12 +64,12 @@ void setColor(long color) {
 void setup() {
     Serial.begin(115200);
     DebugPrintln("Booting");
-    wifiSetup(clientName);
+    wifi::setup(clientName);
     mqtt::setup(clientName, channelInput, callback);
 }
 
 void loop() {
-    wifiLoop();
+    wifi::loop();
     mqtt::loop();
 }
 
