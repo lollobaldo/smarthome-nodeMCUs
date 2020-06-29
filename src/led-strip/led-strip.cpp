@@ -1,3 +1,4 @@
+#include <colors.h>
 #include <mqtt.h>
 #include <utils.h>
 #include <wifi.h>
@@ -14,36 +15,33 @@ const char* channelInput = "lights/leds";
 
 int rgbPins[3] = {D5, D6, D7};
 
-extern const uint8_t gamma8[];
-void setColor(long color);
+void setColor(Color color);
+
+Color color;
 
 void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrint("Message arrived in topic ");
     DebugPrint(topic);
     DebugPrint(": ");
-    //string to hex
+    // add string terminator
     payload[length] = '\0';
     DebugPrintln((char*) payload);
-    // if (payload[0] == '!') {
-    //     ESP.restart();
-    // }
-    // Ignore '#'
-    payload++;
-    DebugPrintln("Inside fnc_ColorChange attempted to change color");
-    // Get rid of '#' and convert it to integer
-    payload[6] = '\0';
-    DebugPrintln((char*)payload);
-    long number = strtol((char*)payload, NULL, 16);
-    DebugPrint("Converting to long: ");
-    DebugPrintln(number);
-    setColor(number);
-    DebugPrintln("-----------------------");
+
+    // Split commands based on first character
+    switch(*payload++) {
+    case '#':
+        color = Color((char*) payload);
+        setColor(color);
+        break;
+    default:
+        break;
+    }
 }
 
-void setColor(long color) {
-    int r = color >> 16;
-    int g = color >> 8 & 0xFF;
-    int b = color & 0xFF;
+void setColor(Color color) {
+    short r = color.red;
+    short g = color.green;
+    short b = color.blue;
 
     int length = snprintf( NULL, 0, "Setting led strip to rgb(%d, %d, %d)", r, g, b);
     char* str = (char*) malloc( length + 1 );
@@ -52,13 +50,18 @@ void setColor(long color) {
 
     // Multiply by 4 to account for NodeMCU increased resolution (range 0-1023)
     // Make it 4.01 to map 255 -> 1023
-    r = round(4.01 * pgm_read_byte(&gamma8[r]));
-    g = round(4.01 * pgm_read_byte(&gamma8[g]));
-    b = round(4.01 * pgm_read_byte(&gamma8[b]));
+    colors::channels gamma_corrected = colors::gamma(color);
+    r = round(4.01 * gamma_corrected.red);
+    g = round(4.01 * gamma_corrected.green);
+    b = round(4.01 * gamma_corrected.blue);
 
     analogWrite(rgbPins[0], r);
     analogWrite(rgbPins[1], g);
     analogWrite(rgbPins[2], b);
+}
+
+void mainLoop() {
+
 }
 
 void setup() {
