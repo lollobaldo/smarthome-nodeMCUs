@@ -61,6 +61,13 @@ void test_color__inequality_constructor() {
     TEST_ASSERT_FALSE(c1 != c3);
 }
 
+void test_color__gamma_correction() {
+    colors::channels g = colors::gamma(Color(0xFF7700));
+    TEST_ASSERT_EQUAL_UINT16(255, g.red);
+    TEST_ASSERT_EQUAL_UINT16(30, g.green);
+    TEST_ASSERT_EQUAL_UINT16(0, g.blue);
+}
+
 
 void test_modes__solid_color() {
     ProgramMode* pm = new SolidColor(colors::ORANGE);
@@ -96,6 +103,7 @@ int main() {
     RUN_TEST(test_color__long_constructor);
     RUN_TEST(test_color__equality_constructor);
     RUN_TEST(test_color__inequality_constructor);
+    RUN_TEST(test_color__gamma_correction);
 
     RUN_TEST(test_modes__solid_color);
     RUN_TEST(test_modes__blink_color__constructor1);

@@ -3,6 +3,7 @@
         "string": "cpp",
         "chrono": "cpp",
         "algorithm": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "thread": "cpp"
     }
 }

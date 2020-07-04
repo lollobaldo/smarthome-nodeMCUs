@@ -1,4 +1,5 @@
 #include <colors.h>
+#include <modes.h>
 #include <mqtt.h>
 #include <utils.h>
 #include <wifi.h>
@@ -17,11 +18,9 @@ int rgbPins[3] = {D5, D6, D7};
 
 void setColor(Color color);
 
-Color color;
 
-enum programMode {
-    SOLID_COLOR, BLINK
-};
+Color lastColor(colors::BLACK);
+ProgramMode* programMode = new SolidColor(colors::BLACK);
 
 void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrint("Message arrived in topic ");
@@ -33,12 +32,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
     // Split commands based on first character
     switch(*payload++) {
-    case '#':
-        color = Color((char*) payload);
-        setColor(color);
-        break;
-    default:
-        break;
+        case '#': {
+            programMode = new SolidColor(Color ((char*) payload));
+            break;
+        } default: {
+            break;
+        }
     }
 }
 
@@ -65,7 +64,11 @@ void setColor(Color color) {
 }
 
 void mainLoop() {
-
+    Color next = programMode->nextColor();
+    if (lastColor != next) {
+        lastColor = next;
+        setColor(next);
+    }
 }
 
 void setup() {
@@ -76,8 +79,10 @@ void setup() {
 }
 
 void loop() {
+    // DebugPrintln("Loop1");
     wifi::loop();
     mqtt::loop();
+    mainLoop();
 }
 
 const uint8_t PROGMEM gamma8[] = {
