@@ -16,10 +16,10 @@ class SolidColor : public ProgramMode {
 };
 class BlinkColor : public ProgramMode {
     public:
-        BlinkColor(Color color, int interval);
+        BlinkColor(Color color, int interval=500);
         Color nextColor() override;
     private:
         Color color;
         int interval;
-        unsigned long lastUpdate;
+        unsigned long lastColor;
 };

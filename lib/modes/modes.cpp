@@ -1,3 +1,5 @@
+#include <utils.h>
+
 #include "modes.h"
 
 #ifdef UNIT_TEST
@@ -21,14 +23,17 @@ Color SolidColor::nextColor() {
 BlinkColor::BlinkColor(Color c, int i) {
     color = c;
     interval = i;
-    lastUpdate = millis();
+    lastColor = millis();
 };
 
 Color BlinkColor::nextColor() {
-    int delta = millis() - lastUpdate;
-    lastUpdate = millis();
-    if (delta < interval || delta > 2*interval) {
+    int delta = millis() - lastColor;
+    if (delta < interval) {
         return color;
     }
-    return colors::BLACK;
+    if (delta < 2*interval) {
+        return colors::BLACK;
+    }
+    lastColor = millis();
+    return color;
 }
