@@ -1,3 +1,5 @@
+#pragma once
+
 #if defined MYDEBUG && defined ARDUINO
     #include <Arduino.h>
     #define DebugPrint(a) (Serial.print(a))

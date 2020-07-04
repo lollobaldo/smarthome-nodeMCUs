@@ -1,3 +1,10 @@
+#ifdef UNIT_TEST
+    #define PROGMEM
+    #define pgm_read_byte(a) *(a)
+#else
+    #include <Arduino.h>
+#endif
+
 #include <utils.h>
 
 #include "colors.h"
@@ -16,11 +23,16 @@ Color::Color(const string hex_color)
 Color::Color(const char* hex_color)
     : Color(strtol(hex_color, NULL, 16)) {}
 
-Color::Color(const long color) {
+Color::Color(const int color) {
     red = color >> 16;
     green = color >> 8 & 0xFF;
     blue = color & 0xFF;
 }
+
+bool operator == (Color a, Color b){
+   return (a.red == b.red) && (a.green == b.green) && (a.blue == b.blue);
+}
+
 
 namespace colors {
     channels gamma(Color color) {

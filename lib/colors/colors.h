@@ -1,10 +1,4 @@
-#ifdef UNIT_TEST
-    #define PROGMEM
-    #define pgm_read_byte(a) *(a)
-    // #define uint8_t __uint128_t
-#else
-    #include <Arduino.h>
-#endif
+#pragma once
 
 #include <string>
 
@@ -16,10 +10,14 @@ class Color {
         Color();
         Color(const std::string hex_color);
         Color(const char* hex_color);
-        Color(const long color);
+        Color(const int color);
+        friend bool operator == (Color a, Color b);
 };
 
 namespace colors {
+    static Color BLACK = Color(0x000000);
+    static Color WHITE = Color(0xFFFFFF);
+    static Color ORANGE = Color(0xFFFFFF);
     struct channels {
         short red;
         short green;

@@ -19,6 +19,10 @@ void setColor(Color color);
 
 Color color;
 
+enum programMode {
+    SOLID_COLOR, BLINK
+};
+
 void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrint("Message arrived in topic ");
     DebugPrint(topic);

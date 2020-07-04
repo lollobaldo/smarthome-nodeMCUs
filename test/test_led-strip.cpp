@@ -1,4 +1,5 @@
 #include <colors.h>
+#include <modes.h>
 #include <utils.h>
 
 #include <unity.h>
@@ -7,7 +8,6 @@
 #include <string>
 using namespace std;
 
-const char* hardcoded;
 
 void test_concat() {
     const char* s1 = "hello";
@@ -37,10 +37,15 @@ void test_color__char_constructor() {
 }
 
 void test_color__long_constructor() {
-    Color c(strtol("ff7700", NULL, 16));
+    Color c(0xFF7700);
     TEST_ASSERT_EQUAL_UINT16(255, c.red);
     TEST_ASSERT_EQUAL_UINT16(119, c.green);
     TEST_ASSERT_EQUAL_UINT16(0, c.blue);
+}
+
+void test_modes__solid_color() {
+    ProgramMode* pm = new SolidColor(colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
 }
 
 
@@ -53,20 +58,7 @@ int main() {
     RUN_TEST(test_color__char_constructor);
     RUN_TEST(test_color__long_constructor);
 
-    uint8_t* payload = (uint8_t*) "ciaone";
-
-    switch(*payload++) {
-    case '#':
-        DebugPrintln("1");
-        break;
-    case 'c':
-        DebugPrintln("2");
-        break;
-    default:
-        DebugPrintln("0");
-        break;
-    }
-    DebugPrint(payload);
+    RUN_TEST(test_modes__solid_color);
 
 
     UNITY_END();
