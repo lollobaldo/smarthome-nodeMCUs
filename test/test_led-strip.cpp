@@ -4,8 +4,10 @@
 
 #include <unity.h>
 
+#include <chrono>
 #include <iostream>
 #include <string>
+#include <thread>
 using namespace std;
 
 
@@ -43,8 +45,43 @@ void test_color__long_constructor() {
     TEST_ASSERT_EQUAL_UINT16(0, c.blue);
 }
 
+void test_color__equality_constructor() {
+    Color c1(0xFF7700);
+    Color c2(0xFF0000);
+    Color c3(0xFF7700);
+    TEST_ASSERT_TRUE(c1 == c3);
+    TEST_ASSERT_FALSE(c1 == c2);
+}
+
+void test_color__inequality_constructor() {
+    Color c1(0xFF7700);
+    Color c2(0xFF0000);
+    Color c3(0xFF7700);
+    TEST_ASSERT_TRUE(c1 != c2);
+    TEST_ASSERT_FALSE(c1 != c3);
+}
+
+
 void test_modes__solid_color() {
     ProgramMode* pm = new SolidColor(colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
+}
+
+void test_modes__blink_color__constructor1() {
+    ProgramMode* pm = new BlinkColor(colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
+    this_thread::sleep_for(chrono::milliseconds(500));
+    TEST_ASSERT_TRUE(pm->nextColor() == colors::BLACK);
+    this_thread::sleep_for(chrono::milliseconds(500));
+    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
+}
+
+void test_modes__blink_color__constructor2() {
+    ProgramMode* pm = new BlinkColor(colors::ORANGE, 100);
+    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
+    this_thread::sleep_for(chrono::milliseconds(100));
+    TEST_ASSERT_TRUE(pm->nextColor() == colors::BLACK);
+    this_thread::sleep_for(chrono::milliseconds(100));
     TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
 }
 
@@ -57,9 +94,12 @@ int main() {
     RUN_TEST(test_color__string_constructor);
     RUN_TEST(test_color__char_constructor);
     RUN_TEST(test_color__long_constructor);
+    RUN_TEST(test_color__equality_constructor);
+    RUN_TEST(test_color__inequality_constructor);
 
     RUN_TEST(test_modes__solid_color);
-
+    RUN_TEST(test_modes__blink_color__constructor1);
+    RUN_TEST(test_modes__blink_color__constructor2);
 
     UNITY_END();
 }

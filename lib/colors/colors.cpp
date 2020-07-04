@@ -30,7 +30,11 @@ Color::Color(const int color) {
 }
 
 bool operator == (Color a, Color b){
-   return (a.red == b.red) && (a.green == b.green) && (a.blue == b.blue);
+    return (a.red == b.red) && (a.green == b.green) && (a.blue == b.blue);
+}
+
+bool operator != (Color a, Color b){
+    return !(a == b);
 }
 
 

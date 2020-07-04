@@ -12,6 +12,7 @@ class Color {
         Color(const char* hex_color);
         Color(const int color);
         friend bool operator == (Color a, Color b);
+        friend bool operator != (Color a, Color b);
 };
 
 namespace colors {
