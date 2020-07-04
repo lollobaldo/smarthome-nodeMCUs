@@ -6,8 +6,8 @@
     #define DebugPrintln(a) (Serial.println(a))
 #elif defined UNIT_TEST
     #include <iostream>
-    #define DebugPrint(a) (cout << (a))
-    #define DebugPrintln(a) (cout << (a) << endl)
+    #define DebugPrint(a) (std::cout << (a))
+    #define DebugPrintln(a) (std::cout << (a) << std::endl)
 #else
     #define DebugPrint(a)
     #define DebugPrintln(a)
