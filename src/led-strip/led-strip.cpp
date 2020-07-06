@@ -32,12 +32,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
     // Split commands based on first character
     switch(*payload++) {
-        case '#': {
+        case '#':
             programMode = new SolidColor(Color ((char*) payload));
             break;
-        } default: {
+        case '!':
+            programMode = new BlinkColor(Color ((char*) payload));
             break;
-        }
+        default:
+            break;
     }
 }
 
