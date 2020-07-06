@@ -29,6 +29,13 @@ Color::Color(const int color) {
     blue = color & 0xFF;
 }
 
+Color::Color(const int r, const int g, const int b) {
+    red = r;
+    green = g;
+    blue = b;
+}
+
+
 bool operator == (Color a, Color b){
     return (a.red == b.red) && (a.green == b.green) && (a.blue == b.blue);
 }
@@ -47,8 +54,17 @@ namespace colors {
         return ret;
     }
 
+    bool isValid() {
+        return true;
+    }
+
     int normalise(int v) {
         return pgm_read_byte(&gamma8[v]);
+    }
+
+    Color fade(Color c, int p) {
+        Color ret(c.red*p, c.green*p, c.blue*p);
+        return ret;
     }
 }
 

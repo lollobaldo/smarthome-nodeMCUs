@@ -11,6 +11,7 @@ class Color {
         Color(const std::string hex_color);
         Color(const char* hex_color);
         Color(const int color);
+        Color(const int red, const int green, const int blue);
         friend bool operator == (Color a, Color b);
         friend bool operator != (Color a, Color b);
 };
@@ -25,5 +26,6 @@ namespace colors {
         short blue;
     };
     int normalise(int channel);
+    Color fade(Color c, int p);
     channels gamma(Color color);
 }
