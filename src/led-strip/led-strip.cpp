@@ -42,6 +42,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
         case '~':
             programMode = new FadeColor(Color ((char*) payload));
             break;
+        case 'R':
+            programMode = new BlinkRainbow();
+            break;
         default:
             break;
     }

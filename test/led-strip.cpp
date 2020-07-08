@@ -126,3 +126,21 @@ TEST(Modes, FadeColor2) {
     EXPECT_EQ(colors::fade(colors::ORANGE, 0.5), pm->nextColor(millis + 75));
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 100));
 }
+
+TEST(Modes, BlinkRainbow1) {
+    ProgramMode* pm = new BlinkRainbow();
+    unsigned long millis = millis();
+    EXPECT_EQ(colors::RED, pm->nextColor(millis + 0));
+    EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 1000));
+    EXPECT_EQ(colors::BLUE, pm->nextColor(millis + 4000));
+    EXPECT_EQ(colors::RED, pm->nextColor(millis + 7000));
+}
+
+TEST(Modes, BlinkRainbow2) {
+    ProgramMode* pm = new BlinkRainbow(100);
+    unsigned long millis = millis();
+    EXPECT_EQ(colors::RED, pm->nextColor(millis + 0));
+    EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 100));
+    EXPECT_EQ(colors::BLUE, pm->nextColor(millis + 400));
+    EXPECT_EQ(colors::RED, pm->nextColor(millis + 700));
+}

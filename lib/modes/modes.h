@@ -32,3 +32,11 @@ class FadeColor : public ProgramMode {
         int interval;
         unsigned long lastColor;
 };
+class BlinkRainbow : public ProgramMode {
+    public:
+        BlinkRainbow(int interval=1000);
+        Color nextColor(unsigned long millis) override;
+    private:
+        int interval;
+        unsigned long start;
+};

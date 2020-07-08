@@ -51,3 +51,14 @@ Color FadeColor::nextColor(unsigned long millis) {
     double p = 2 * abs(interval/2 - delta) / (double) interval;
     return fade(color, p);
 }
+
+// BLINK RAINBOW
+BlinkRainbow::BlinkRainbow(int i) {
+    interval = i;
+    start = millis();
+};
+
+Color BlinkRainbow::nextColor(unsigned long millis) {
+    int i = ((millis - start) / interval) % 7;
+    return RAINBOW[i];
+}
