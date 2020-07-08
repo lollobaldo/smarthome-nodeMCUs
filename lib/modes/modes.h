@@ -4,20 +4,29 @@
 
 class ProgramMode {
     public:
-        virtual Color nextColor() = 0;
+        virtual Color nextColor(unsigned long millis) = 0;
 };
 
 class SolidColor : public ProgramMode {
     public:
         SolidColor(Color color);
-        Color nextColor() override;
+        Color nextColor(unsigned long millis) override;
     private:
         Color color;
 };
 class BlinkColor : public ProgramMode {
     public:
-        BlinkColor(Color color, int interval=500);
-        Color nextColor() override;
+        BlinkColor(Color color, int interval=1000);
+        Color nextColor(unsigned long millis) override;
+    private:
+        Color color;
+        int interval;
+        unsigned long lastColor;
+};
+class FadeColor : public ProgramMode {
+    public:
+        FadeColor(Color color, int interval=1000);
+        Color nextColor(unsigned long millis) override;
     private:
         Color color;
         int interval;

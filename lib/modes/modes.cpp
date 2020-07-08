@@ -1,6 +1,7 @@
 #include <utils.h>
 
 #include "modes.h"
+using namespace colors;
 
 #ifdef UNIT_TEST
     #include <chrono>
@@ -15,7 +16,7 @@ SolidColor::SolidColor(Color c) {
     color = c;
 };
 
-Color SolidColor::nextColor() {
+Color SolidColor::nextColor(unsigned long millis) {
     return color;
 }
 
@@ -26,14 +27,27 @@ BlinkColor::BlinkColor(Color c, int i) {
     lastColor = millis();
 };
 
-Color BlinkColor::nextColor() {
-    int delta = millis() - lastColor;
+Color BlinkColor::nextColor(unsigned long millis) {
+    int delta = millis - lastColor;
     if (delta < interval) {
         return color;
     }
     if (delta < 2*interval) {
         return colors::BLACK;
     }
-    lastColor = millis();
+    lastColor = millis;
     return color;
+}
+
+// FADE
+FadeColor::FadeColor(Color c, int i) {
+    color = c;
+    interval = i;
+    lastColor = millis();
+};
+
+Color FadeColor::nextColor(unsigned long millis) {
+    int delta = (millis - lastColor) % interval;
+    double p = 2 * abs(interval/2 - delta) / (double) interval;
+    return fade(color, p);
 }

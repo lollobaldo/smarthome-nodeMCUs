@@ -6,6 +6,7 @@
 
 #include <Arduino.h>
 #include <PubSubClient.h>
+#include <gtest/gtest.h>
 
 #include <string>
 using namespace std;
@@ -38,35 +39,38 @@ void callback(char* topic, byte* payload, unsigned int length) {
         case '!':
             programMode = new BlinkColor(Color ((char*) payload));
             break;
+        case '~':
+            programMode = new FadeColor(Color ((char*) payload));
+            break;
         default:
             break;
     }
 }
 
 void setColor(Color color) {
-    short r = color.red;
-    short g = color.green;
-    short b = color.blue;
+    // short r = color.red;
+    // short g = color.green;
+    // short b = color.blue;
 
-    int length = snprintf( NULL, 0, "Setting led strip to rgb(%d, %d, %d)", r, g, b);
-    char* str = (char*) malloc( length + 1 );
-    snprintf( str, length + 1, "Setting led strip to rgb(%d, %d, %d)", r, g, b);
-    mqtt::client.publish(mqtt::cLog, str);
+    // int length = snprintf( NULL, 0, "Setting led strip to rgb(%d, %d, %d)", r, g, b);
+    // char* str = (char*) malloc( length + 1 );
+    // snprintf( str, length + 1, "Setting led strip to rgb(%d, %d, %d)", r, g, b);
+    // mqtt::client.publish(mqtt::cLog, str);
 
     // Multiply by 4 to account for NodeMCU increased resolution (range 0-1023)
     // Make it 4.01 to map 255 -> 1023
     colors::channels gamma_corrected = colors::gamma(color);
-    r = round(4.01 * gamma_corrected.red);
-    g = round(4.01 * gamma_corrected.green);
-    b = round(4.01 * gamma_corrected.blue);
+    short r = round(4.01 * gamma_corrected.red);
+    short g = round(4.01 * gamma_corrected.green);
+    short b = round(4.01 * gamma_corrected.blue);
 
     analogWrite(rgbPins[0], r);
     analogWrite(rgbPins[1], g);
     analogWrite(rgbPins[2], b);
 }
 
-void mainLoop() {
-    Color next = programMode->nextColor();
+inline void mainLoop() {
+    Color next = programMode->nextColor(millis());
     if (lastColor != next) {
         lastColor = next;
         setColor(next);

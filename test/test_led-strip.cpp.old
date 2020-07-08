@@ -7,8 +7,11 @@
 #include <chrono>
 #include <iostream>
 #include <string>
-#include <thread>
+// #include <thread>
 using namespace std;
+using namespace std::chrono;
+#define millis() (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count())
+
 
 
 void test_concat() {
@@ -45,7 +48,7 @@ void test_color__long_constructor() {
     TEST_ASSERT_EQUAL_UINT16(0, c.blue);
 }
 
-void test_color__equality_constructor() {
+void test_color__equality_operator() {
     Color c1(0xFF7700);
     Color c2(0xFF0000);
     Color c3(0xFF7700);
@@ -53,12 +56,25 @@ void test_color__equality_constructor() {
     TEST_ASSERT_FALSE(c1 == c2);
 }
 
-void test_color__inequality_constructor() {
+void test_color__inequality_operator() {
     Color c1(0xFF7700);
     Color c2(0xFF0000);
     Color c3(0xFF7700);
     TEST_ASSERT_TRUE(c1 != c2);
     TEST_ASSERT_FALSE(c1 != c3);
+}
+
+void test_color__stream() {
+    Color c1(0xFF7700);
+    TEST_ASSERT_EQUAL_STRING(
+        "Color: rgb(255, 119, 0).", c1.toString().c_str());
+}
+
+void test_color__fade() {
+    Color c = colors::fade(Color(0xFF7700), 0.3);
+    TEST_ASSERT_EQUAL_UINT16(76, c.red);
+    TEST_ASSERT_EQUAL_UINT16(35, c.green);
+    TEST_ASSERT_EQUAL_UINT16(0, c.blue);
 }
 
 void test_color__gamma_correction() {
@@ -69,27 +85,45 @@ void test_color__gamma_correction() {
 }
 
 
+
 void test_modes__solid_color() {
     ProgramMode* pm = new SolidColor(colors::ORANGE);
-    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor(10) == colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor(1000) == colors::ORANGE);
 }
 
 void test_modes__blink_color__constructor1() {
     ProgramMode* pm = new BlinkColor(colors::ORANGE);
-    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
-    this_thread::sleep_for(chrono::milliseconds(500));
-    TEST_ASSERT_TRUE(pm->nextColor() == colors::BLACK);
-    this_thread::sleep_for(chrono::milliseconds(500));
-    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
+    unsigned long millis = millis();
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 0) == colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 1000) == colors::BLACK);
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 2000) == colors::ORANGE);
 }
 
 void test_modes__blink_color__constructor2() {
     ProgramMode* pm = new BlinkColor(colors::ORANGE, 100);
-    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
-    this_thread::sleep_for(chrono::milliseconds(100));
-    TEST_ASSERT_TRUE(pm->nextColor() == colors::BLACK);
-    this_thread::sleep_for(chrono::milliseconds(100));
-    TEST_ASSERT_TRUE(pm->nextColor() == colors::ORANGE);
+    unsigned long millis = millis();
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 0) == colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 100) == colors::BLACK);
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 200) == colors::ORANGE);
+}
+
+void test_modes__fade_color__constructor1() {
+    ProgramMode* pm = new FadeColor(colors::ORANGE);
+    unsigned long millis = millis();
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 0) == colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 500) == colors::BLACK);
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 750) == colors::fade(colors::ORANGE, 0.5));
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 1000) == colors::ORANGE);
+}
+
+void test_modes__fade_color__constructor2() {
+    ProgramMode* pm = new FadeColor(colors::ORANGE, 100);
+    unsigned long millis = millis();
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 0) == colors::ORANGE);
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 50) == colors::BLACK);
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 75) == colors::fade(colors::ORANGE, 0.5));
+    TEST_ASSERT_TRUE(pm->nextColor(millis + 100) == colors::ORANGE);
 }
 
 
@@ -101,13 +135,16 @@ int main() {
     RUN_TEST(test_color__string_constructor);
     RUN_TEST(test_color__char_constructor);
     RUN_TEST(test_color__long_constructor);
-    RUN_TEST(test_color__equality_constructor);
-    RUN_TEST(test_color__inequality_constructor);
+    RUN_TEST(test_color__equality_operator);
+    RUN_TEST(test_color__inequality_operator);
     RUN_TEST(test_color__gamma_correction);
+    RUN_TEST(test_color__fade);
 
     RUN_TEST(test_modes__solid_color);
     RUN_TEST(test_modes__blink_color__constructor1);
     RUN_TEST(test_modes__blink_color__constructor2);
+    RUN_TEST(test_modes__fade_color__constructor1);
+    RUN_TEST(test_modes__fade_color__constructor2);
 
     UNITY_END();
 }
