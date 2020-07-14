@@ -2,6 +2,8 @@
 
 #include <colors.h>
 
+#include <vector>
+
 class ProgramMode {
     public:
         virtual Color nextColor(unsigned long millis) = 0;
@@ -9,10 +11,10 @@ class ProgramMode {
 
 class Jump : public ProgramMode {
     public:
-        Jump(std::vector<byte>& colors, int interval=1000);
-        Color nextColor(unsigned long millis);
+        Jump(std::vector<Color>& colors, int interval=1000);
+        Color nextColor(unsigned long millis) override;
     private:
-        std::vector<byte> colors;
+        std::vector<Color> colors;
         int interval;
         unsigned long start;
 };

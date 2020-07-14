@@ -20,17 +20,17 @@ Color SolidColor::nextColor(unsigned long millis) {
     return color;
 };
 
-// // JUMP
-// Jump::Jump(std::vector<byte>& c, int i=1000) {
-//     colors = c;
-//     interval = i;
-//     start = millis();
-// };
+// JUMP
+Jump::Jump(std::vector<Color>& c, int i) {
+    colors = c;
+    interval = i;
+    start = millis();
+};
 
-// Color Jump::nextColor(unsigned long millis) {
-//     int i = ((millis - start) / interval) % colors.size();
-//     return colors[i];
-// };
+Color Jump::nextColor(unsigned long millis) {
+    int i = ((millis - start) / interval) % colors.size();
+    return colors[i];
+};
 
 // BLINK
 BlinkColor::BlinkColor(Color c, int i) {
@@ -38,6 +38,9 @@ BlinkColor::BlinkColor(Color c, int i) {
     interval = i;
     lastColor = millis();
 };
+
+// BlinkColor::BlinkColor(Color c, int i)
+//     : Jump(std::vector<Color> { c, colors::BLACK };, i) {}
 
 Color BlinkColor::nextColor(unsigned long millis) {
     int delta = millis - lastColor;

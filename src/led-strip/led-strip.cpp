@@ -6,7 +6,6 @@
 
 #include <Arduino.h>
 #include <PubSubClient.h>
-#include <gtest/gtest.h>
 
 #include <string>
 using namespace std;

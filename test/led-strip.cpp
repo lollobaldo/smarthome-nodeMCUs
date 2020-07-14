@@ -7,6 +7,7 @@
 #include <chrono>
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 using namespace std::chrono;
 #define millis() (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count())
@@ -88,13 +89,22 @@ TEST(Color, GammaCorrection) {
 
 
 TEST(Modes, SolidColor) {
-    ProgramMode* pm = new SolidColor(colors::ORANGE);
+    unique_ptr<ProgramMode> pm(new SolidColor(colors::ORANGE));
     EXPECT_EQ(colors::ORANGE, pm->nextColor(10));
     EXPECT_EQ(colors::ORANGE, pm->nextColor(1000));
 }
 
+TEST(Modes, Jump) {
+    vector<Color> cols {colors::ORANGE, colors::BLACK};
+    unique_ptr<ProgramMode> pm(new Jump(cols));
+    unsigned long millis = millis();
+    EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 0));
+    EXPECT_EQ(colors::BLACK, pm->nextColor(millis + 1000));
+    EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 2000));
+}
+
 TEST(Modes, BlinkColor1) {
-    ProgramMode* pm = new BlinkColor(colors::ORANGE);
+    unique_ptr<ProgramMode> pm(new BlinkColor(colors::ORANGE));
     unsigned long millis = millis();
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 0));
     EXPECT_EQ(colors::BLACK, pm->nextColor(millis + 1000));
@@ -102,7 +112,7 @@ TEST(Modes, BlinkColor1) {
 }
 
 TEST(Modes, BlinkColor2) {
-    ProgramMode* pm = new BlinkColor(colors::ORANGE, 100);
+    unique_ptr<ProgramMode> pm(new BlinkColor(colors::ORANGE, 100));
     unsigned long millis = millis();
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 0));
     EXPECT_EQ(colors::BLACK, pm->nextColor(millis + 100));
@@ -110,7 +120,7 @@ TEST(Modes, BlinkColor2) {
 }
 
 TEST(Modes, FadeColor1) {
-    ProgramMode* pm = new FadeColor(colors::ORANGE);
+    unique_ptr<ProgramMode> pm(new FadeColor(colors::ORANGE));
     unsigned long millis = millis();
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 0));
     EXPECT_EQ(colors::BLACK, pm->nextColor(millis + 500));
@@ -119,7 +129,7 @@ TEST(Modes, FadeColor1) {
 }
 
 TEST(Modes, FadeColor2) {
-    ProgramMode* pm = new FadeColor(colors::ORANGE, 100);
+    unique_ptr<ProgramMode> pm(new FadeColor(colors::ORANGE, 100));
     unsigned long millis = millis();
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 0));
     EXPECT_EQ(colors::BLACK, pm->nextColor(millis + 50));
@@ -128,7 +138,7 @@ TEST(Modes, FadeColor2) {
 }
 
 TEST(Modes, BlinkRainbow1) {
-    ProgramMode* pm = new BlinkRainbow();
+    unique_ptr<ProgramMode> pm(new BlinkRainbow());
     unsigned long millis = millis();
     EXPECT_EQ(colors::RED, pm->nextColor(millis + 0));
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 1000));
@@ -137,7 +147,7 @@ TEST(Modes, BlinkRainbow1) {
 }
 
 TEST(Modes, BlinkRainbow2) {
-    ProgramMode* pm = new BlinkRainbow(100);
+    unique_ptr<ProgramMode> pm(new BlinkRainbow(100));
     unsigned long millis = millis();
     EXPECT_EQ(colors::RED, pm->nextColor(millis + 0));
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 100));
