@@ -19,19 +19,19 @@ extern const uint8_t PROGMEM gamma8[];
 Color::Color()
     : Color("000000") {}
 
-Color::Color(string hex_color)
+Color::Color(const string& hex_color)
     : Color(hex_color.c_str()) {}
 
 Color::Color(const char* hex_color)
     : Color(strtol(hex_color, NULL, 16)) {}
 
-Color::Color(const int color) {
+Color::Color(const int& color) {
     red = color >> 16;
     green = color >> 8 & 0xFF;
     blue = color & 0xFF;
 }
 
-Color::Color(const int r, const int g, const int b) {
+Color::Color(const byte& r, const byte& g, const byte& b) {
     red = r;
     green = g;
     blue = b;
@@ -39,35 +39,31 @@ Color::Color(const int r, const int g, const int b) {
 
 std::string Color::toString() {
     std::stringstream ss;
-    ss
-        << "Color: rgb("
-        << red << ", "
-        << green << ", "
-        << blue << ").";
+    ss << *this;
     return ss.str();
 }
 
 
-bool operator == (const Color a, const Color b){
+bool operator == (const Color& a, const Color& b){
     return (a.red == b.red) && (a.green == b.green) && (a.blue == b.blue);
 }
 
-bool operator != (const Color a, const Color b){
-    return !(a == b);
+bool operator != (const Color& a, const Color& b){
+    return !((Color) a == (Color) b);
 }
 
-std::ostream& operator << (std::ostream &out, Color const& c) {
+std::ostream& operator << (std::ostream& out, const Color& c) {
     out
         << "Color: rgb("
-        << c.red << ", "
-        << c.green << ", "
-        << c.blue << ").";
+        << +c.red << ", "
+        << +c.green << ", "
+        << +c.blue << ").";
     return out;
 }
 
 
 namespace colors {
-    channels gamma(const Color color) {
+    channels gamma(const Color& color) {
         channels ret;
         ret.red = normalise(color.red);
         ret.green = normalise(color.green);
@@ -79,11 +75,11 @@ namespace colors {
         return true;
     }
 
-    int normalise(const int v) {
+    byte normalise(const byte& v) {
         return pgm_read_byte(&gamma8[v]);
     }
 
-    Color fade(Color c, double p) {
+    Color fade(const Color& c, const double& p) {
         Color ret(c.red*p, c.green*p, c.blue*p);
         return ret;
     }

@@ -11,14 +11,26 @@ using namespace colors;
     #include <Arduino.h>
 #endif
 
-// Solid
+// SOLID
 SolidColor::SolidColor(Color c) {
     color = c;
 };
 
 Color SolidColor::nextColor(unsigned long millis) {
     return color;
-}
+};
+
+// // JUMP
+// Jump::Jump(std::vector<byte>& c, int i=1000) {
+//     colors = c;
+//     interval = i;
+//     start = millis();
+// };
+
+// Color Jump::nextColor(unsigned long millis) {
+//     int i = ((millis - start) / interval) % colors.size();
+//     return colors[i];
+// };
 
 // BLINK
 BlinkColor::BlinkColor(Color c, int i) {
@@ -37,7 +49,7 @@ Color BlinkColor::nextColor(unsigned long millis) {
     }
     lastColor = millis;
     return color;
-}
+};
 
 // FADE
 FadeColor::FadeColor(Color c, int i) {
@@ -50,7 +62,7 @@ Color FadeColor::nextColor(unsigned long millis) {
     int delta = (millis - lastColor) % interval;
     double p = 2 * abs(interval/2 - delta) / (double) interval;
     return fade(color, p);
-}
+};
 
 // BLINK RAINBOW
 BlinkRainbow::BlinkRainbow(int i) {
@@ -59,6 +71,6 @@ BlinkRainbow::BlinkRainbow(int i) {
 };
 
 Color BlinkRainbow::nextColor(unsigned long millis) {
-    int i = ((millis - start) / interval) % 7;
+    int i = ((millis - start) / interval) % RAINBOW.size();
     return RAINBOW[i];
-}
+};

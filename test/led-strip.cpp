@@ -133,7 +133,7 @@ TEST(Modes, BlinkRainbow1) {
     EXPECT_EQ(colors::RED, pm->nextColor(millis + 0));
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 1000));
     EXPECT_EQ(colors::BLUE, pm->nextColor(millis + 4000));
-    EXPECT_EQ(colors::RED, pm->nextColor(millis + 7000));
+    EXPECT_EQ(colors::RED, pm->nextColor(millis + 6000));
 }
 
 TEST(Modes, BlinkRainbow2) {
@@ -142,5 +142,5 @@ TEST(Modes, BlinkRainbow2) {
     EXPECT_EQ(colors::RED, pm->nextColor(millis + 0));
     EXPECT_EQ(colors::ORANGE, pm->nextColor(millis + 100));
     EXPECT_EQ(colors::BLUE, pm->nextColor(millis + 400));
-    EXPECT_EQ(colors::RED, pm->nextColor(millis + 700));
+    EXPECT_EQ(colors::RED, pm->nextColor(millis + 600));
 }

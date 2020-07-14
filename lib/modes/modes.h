@@ -7,6 +7,16 @@ class ProgramMode {
         virtual Color nextColor(unsigned long millis) = 0;
 };
 
+class Jump : public ProgramMode {
+    public:
+        Jump(std::vector<byte>& colors, int interval=1000);
+        Color nextColor(unsigned long millis);
+    private:
+        std::vector<byte> colors;
+        int interval;
+        unsigned long start;
+};
+
 class SolidColor : public ProgramMode {
     public:
         SolidColor(Color color);
