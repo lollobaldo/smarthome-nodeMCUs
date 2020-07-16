@@ -20,7 +20,9 @@ void setColor(Color color);
 
 
 Color lastColor(colors::BLACK);
-ProgramMode* programMode = new SolidColor(colors::BLACK);
+
+unique_ptr<ProgramMode> programMode(new SolidColor(colors::BLACK));
+
 
 void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrint("Message arrived in topic ");
@@ -33,16 +35,19 @@ void callback(char* topic, byte* payload, unsigned int length) {
     // Split commands based on first character
     switch(*payload++) {
         case '#':
-            programMode = new SolidColor(Color ((char*) payload));
+            programMode.reset(new SolidColor(Color ((char*) payload)));
             break;
         case '!':
-            programMode = new BlinkColor(Color ((char*) payload));
+            programMode.reset(new BlinkColor(Color ((char*) payload)));
             break;
         case '~':
-            programMode = new FadeColor(Color ((char*) payload));
+            programMode.reset(new FadeColor(Color ((char*) payload)));
             break;
         case 'R':
-            programMode = new BlinkRainbow();
+            programMode.reset(new JumpRainbow());
+            break;
+        case 'r':
+            programMode.reset(new FadeRainbow());
             break;
         default:
             break;

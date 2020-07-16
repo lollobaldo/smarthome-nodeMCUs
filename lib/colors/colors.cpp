@@ -83,6 +83,15 @@ namespace colors {
         Color ret(c.red*p, c.green*p, c.blue*p);
         return ret;
     }
+
+    Color fade(const Color& c1, const Color& c2, const double& p) {
+        double q = 1 - p;
+        Color ret(
+            c1.red*p + c2.red*q,
+            c1.green*p + c2.green*q,
+            c1.blue*p + c2.blue*q);
+        return ret;
+    }
 }
 
 const uint8_t PROGMEM gamma8[] = {

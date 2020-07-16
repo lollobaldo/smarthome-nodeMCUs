@@ -2,8 +2,8 @@
 
 #include <utils.h>
 
-#include <array>
 #include <string>
+#include <vector>
 
 class Color {
     public:
@@ -34,16 +34,16 @@ namespace colors {
     static Color PURPLE = Color(0x9900FF);
     static Color VIOLET = Color(0xFF00FF);
 
-    // static std::array<Color, 3> RAINBOW_THREE = {
+    // static std::vector<Color> RAINBOW_THREE = {
     //     RED, GREEN, BLUE,
     // };
 
-    static std::array<Color, 6> RAINBOW = {
+    static std::vector<Color> RAINBOW = {
         RED, ORANGE, YELLOW,
         GREEN, BLUE, VIOLET,
     };
 
-    // static std::array<Color, 8> FULL_RAINBOW = {
+    // static std::vector<Color> FULL_RAINBOW = {
     //     RED, ORANGE, YELLOW, GREEN,
     //     AQUAMARINE, BLUE, PURPLE, VIOLET,
     // };
@@ -55,6 +55,7 @@ namespace colors {
     };
 
     byte normalise(const byte& channel);
-    Color fade(const Color& c, const double& p);
+    Color fade(const Color& color, const double& percentage);
+    Color fade(const Color& color1, const Color& color2, const double& percentage);
     channels gamma(const Color& color);
 }
