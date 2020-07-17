@@ -26,12 +26,19 @@ TEST(Utils, Concat) {
 }
 
 TEST(Utils, AtWithOverflow) {
-    std::vector<int> v = {0, 1, 2, 3, 4};
+    vector<int> v = {0, 1, 2, 3, 4};
 
     EXPECT_EQ(0, atWithOverflow(v, 0));
     EXPECT_EQ(2, atWithOverflow(v, 2));
     EXPECT_EQ(0, atWithOverflow(v, 5));
     EXPECT_EQ(1, atWithOverflow(v, 11));
+}
+
+TEST(Utils, Split) {
+    string s("Ciao mamma ciao");
+    vector<string> expected = {"Ciao", "mamma", "ciao"};
+
+    EXPECT_EQ(expected, split(s));
 }
 
 TEST(Color, StringConstructor) {

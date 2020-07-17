@@ -1,6 +1,8 @@
 #include <cstring>
+#include <iterator>
 #include <string>
-#include<vector>
+#include <sstream>
+#include <vector>
 using namespace std;
 
 #include "utils.h"
@@ -11,4 +13,11 @@ const char* concat(const char* s1, const char* s2) {
     char* cstr = new char[s.length()+1];
     strcpy(cstr, s.c_str());
     return cstr;
+}
+
+vector<string> split(string s) {
+    istringstream iss(s);
+    return {
+        istream_iterator<string>{iss},
+        istream_iterator<string>{}};
 }

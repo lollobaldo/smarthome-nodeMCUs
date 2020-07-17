@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 #ifndef ARDUINO
@@ -27,3 +28,5 @@ T atWithOverflow (const std::vector<T, A>& v, int i) {
     int s = v.size();
     return v[i % s];
 }
+
+std::vector<std::string> split(std::string s);
