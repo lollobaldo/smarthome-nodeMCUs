@@ -3,7 +3,9 @@
 #include <string>
 #include <vector>
 
-#ifndef ARDUINO
+#ifdef ARDUINO
+    #include <Arduino.h>
+#else
     #define byte uint8_t
 #endif
 

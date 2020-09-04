@@ -48,6 +48,20 @@ TEST(Color, StringConstructor) {
     EXPECT_EQ(0, c.blue);
 }
 
+TEST(Color, StringConstructorHashtag) {
+    Color c(string("#ff7700"));
+    EXPECT_EQ(255, c.red);
+    EXPECT_EQ(119, c.green);
+    EXPECT_EQ(0, c.blue);
+}
+
+TEST(Color, CharConstructorHashtag) {
+    Color c("#ff7700");
+    EXPECT_EQ(255, c.red);
+    EXPECT_EQ(119, c.green);
+    EXPECT_EQ(0, c.blue);
+}
+
 TEST(Color, CharConstructor) {
     Color c("ff7700");
     EXPECT_EQ(255, c.red);
@@ -80,13 +94,13 @@ TEST(Color, InequalityOperator) {
 
 TEST(Color, ToString) {
     Color c1(0xFF7700);
-    EXPECT_STREQ("Color: rgb(255, 119, 0).", c1.toString().c_str());
+    EXPECT_STREQ("rgb(255, 119, 0)", c1.toString().c_str());
 }
 
 TEST(Color, Stream) {
     Color c1(0xFF7700);
     EXPECT_STREQ(
-        "Color: rgb(255, 119, 0).", c1.toString().c_str());
+        "rgb(255, 119, 0)", c1.toString().c_str());
 }
 
 TEST(Color, Fade) {
@@ -101,6 +115,16 @@ TEST(Color, GammaCorrection) {
     EXPECT_EQ(255, g.red);
     EXPECT_EQ(30, g.green);
     EXPECT_EQ(0, g.blue);
+}
+
+TEST(Color, string2vector) {
+    string s("#FF0000,#00FF00,#0000FF");
+    vector<Color> expected = {
+        Color (0xFF0000),
+        Color (0x00FF00),
+        Color (0x0000FF)
+    };
+    EXPECT_EQ(expected, string2vector(s));
 }
 
 

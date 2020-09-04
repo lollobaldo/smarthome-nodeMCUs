@@ -23,7 +23,9 @@ Color::Color(const string& hex_color)
     : Color(hex_color.c_str()) {}
 
 Color::Color(const char* hex_color)
-    : Color(strtol(hex_color, NULL, 16)) {}
+    : Color(strtol(
+        hex_color[0] != '#' ? hex_color : hex_color+1
+        , NULL, 16)) {}
 
 Color::Color(const int& color) {
     red = color >> 16;
@@ -54,10 +56,10 @@ bool operator != (const Color& a, const Color& b){
 
 std::ostream& operator << (std::ostream& out, const Color& c) {
     out
-        << "Color: rgb("
+        << "rgb("
         << +c.red << ", "
         << +c.green << ", "
-        << +c.blue << ").";
+        << +c.blue << ")";
     return out;
 }
 
@@ -79,7 +81,7 @@ namespace colors {
         return pgm_read_byte(&gamma8[v]);
     }
 
-    Color fade(const Color& c, const double& p) {
+    Color brightness(const Color& c, const double& p) {
         Color ret(c.red*p, c.green*p, c.blue*p);
         return ret;
     }
@@ -90,6 +92,16 @@ namespace colors {
             c1.red*p + c2.red*q,
             c1.green*p + c2.green*q,
             c1.blue*p + c2.blue*q);
+        return ret;
+    }
+
+    std::vector<Color> string2vector(const std::string& s) {
+        std::istringstream iss(s);
+        std::string item;
+        std::vector<Color> ret;
+        while (std::getline(iss, item, ',')) {
+            ret.emplace_back(item);
+        }
         return ret;
     }
 }
