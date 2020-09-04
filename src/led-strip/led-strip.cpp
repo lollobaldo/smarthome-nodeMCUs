@@ -12,18 +12,15 @@ using namespace std;
 
 const char* clientName = "ESP--leds-strip";
 
-
-const char* channelColor = "lights/leds";
-const char* channelBrightness = "lights/leds/brightness";
-
+const char* channelInput = "lights/leds";
 
 int rgbPins[3] = {D5, D6, D7};
 
 void setColor(Color color);
 
 
-float brightness = 1;
 Color lastColor(colors::BLACK);
+
 unique_ptr<ProgramMode> programMode(new SolidColor(colors::BLACK));
 
 
@@ -32,47 +29,35 @@ void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrint(topic);
     DebugPrint(": ");
     // add string terminator
-    char* command = (char*) payload;
-    command[length] = '\0';
-    DebugPrintln(command);
+    payload[length] = '\0';
+    DebugPrintln((char*) payload);
 
-    if (strcmp(topic, channelColor)) {
-        // Split commands based on first character
-        ProgramMode* newProgramMode;
-        switch(*command++) {
-            case '#':
-                newProgramMode = new SolidColor(Color (command));
-                break;
-            case '!':
-                newProgramMode = new BlinkColor(Color (command));
-                break;
-            case '~':
-                newProgramMode = new FadeColor(Color (command));
-                break;
-            case 'R':
-                newProgramMode = new JumpRainbow();
-                break;
-            case 'r':
-                newProgramMode = new FadeRainbow();
-                break;
-            case '%':
-                newProgramMode = new Fade(colors::string2vector(string (command)));
-                break;
-            default:
-                break;
-        }
-        programMode.reset(newProgramMode);
-        brightness = 1;
-        mqtt::client.publish(channelBrightness, "1");
-    } else if (strcmp(topic, channelBrightness)) {
-        brightness = strtod(command, NULL) / 100;
+    // Split commands based on first character
+    switch(*payload++) {
+        case '#':
+            programMode.reset(new SolidColor(Color ((char*) payload)));
+            break;
+        case '!':
+            programMode.reset(new BlinkColor(Color ((char*) payload)));
+            break;
+        case '~':
+            programMode.reset(new FadeColor(Color ((char*) payload)));
+            break;
+        case 'R':
+            programMode.reset(new JumpRainbow());
+            break;
+        case 'r':
+            programMode.reset(new FadeRainbow());
+            break;
+        default:
+            break;
     }
 }
 
 void setColor(Color color) {
     // Multiply by 4 to account for NodeMCU increased resolution (range 0-1023)
     // Make it 4.01 to map 255 -> 1023
-    colors::channels gamma_corrected = colors::gamma(colors::brightness(color, brightness));
+    colors::channels gamma_corrected = colors::gamma(color);
     short r = round(4.01 * gamma_corrected.red);
     short g = round(4.01 * gamma_corrected.green);
     short b = round(4.01 * gamma_corrected.blue);
@@ -94,7 +79,7 @@ void setup() {
     Serial.begin(115200);
     DebugPrintln("Booting");
     wifi::setup(clientName);
-    mqtt::setup(clientName, channelColor, callback);
+    mqtt::setup(clientName, channelInput, callback);
 }
 
 void loop() {
