@@ -15,6 +15,13 @@ const char* concat(const char* s1, const char* s2) {
     return cstr;
 }
 
+const char* concat(const char* s1, const char* s2, const char* s3) {
+    string s = string(s1) + s2 + s3;
+    char* cstr = new char[s.length() + 1];
+    strcpy(cstr, s.c_str());
+    return cstr;
+}
+
 vector<string> split(string s) {
     istringstream iss(s);
     return {

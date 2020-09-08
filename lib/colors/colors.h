@@ -58,6 +58,5 @@ namespace colors {
     Color brightness(const Color& color, const double& percentage);
     Color fade(const Color& color1, const Color& color2, const double& percentage);
     channels gamma(const Color& color);
-    channels gamma(const Color& color, float brightness);
     std::vector<Color> string2vector(const std::string& s);
 }
