@@ -14,16 +14,16 @@ char* loglevel2String(LogLevel ll) {
 }
 
 namespace logger {
-    boolean log(LogLevel ll, const char* topic, const char* m) {
+    bool log(LogLevel ll, const char* topic, const char* m) {
         const char* message = concat(loglevel2String(ll), m);
         return log(topic, message, true);
     }
 
-    boolean log(const char* topic, const char* message) {
+    bool log(const char* topic, const char* message) {
         return log(topic, message, false);
     }
 
-    boolean log(const char* topic, const char* message, boolean retained) {
+    bool log(const char* topic, const char* message, bool retained) {
         if (mqtt::client.connected()) {
             DebugPrint("[");
             DebugPrint(topic);

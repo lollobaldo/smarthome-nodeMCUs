@@ -1,5 +1,9 @@
 #include "wifi.h"
 
+#ifndef WIFI_SSID
+    #define WIFI_SSID ""
+#endif
+
 #ifndef WIFI_PSW
     #define WIFI_PSW ""
 #endif
@@ -9,17 +13,18 @@
 #endif
 
 namespace wifi {
-    const char* ssid = "D-Link-Fibra";
+    const char* ssid = WIFI_SSID;
     const char* password = WIFI_PSW;
 
     WiFiClient client;
 
-    void setup_wifi() {
+    void setup_wifi(const char* hostname) {
         delay(10);
         Serial.println();
         Serial.print("Connecting to ");
         Serial.println(ssid);
         WiFi.mode(WIFI_STA);
+        WiFi.hostname(hostname);
         WiFi.begin(ssid, password);
         while (WiFi.status() != WL_CONNECTED) {
             delay(500);
@@ -70,7 +75,7 @@ namespace wifi {
     }
 
     void setup(const char* hostname) {
-        setup_wifi();
+        setup_wifi(hostname);
         setup_OTA(hostname);
     }
 
