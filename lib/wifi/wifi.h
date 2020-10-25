@@ -8,8 +8,6 @@
 #include <ArduinoOTA.h>
 
 namespace wifi {
-    extern WiFiClient client;
-
     void setup(const char* hostname);
     void loop();
 }

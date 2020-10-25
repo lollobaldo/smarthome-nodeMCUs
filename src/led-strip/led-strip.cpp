@@ -11,8 +11,11 @@
 #include <string>
 using namespace std;
 
-const char* clientName = "ESP--leds-strip";
 
+#ifndef CLIENT_NAME
+    #define CLIENT_NAME "ESP--anonymous"
+#endif
+const char* clientName = CLIENT_NAME;
 
 const char* channelLog = "logs/lights/leds";
 const char* channelColor = "lights/leds";

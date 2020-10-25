@@ -30,7 +30,8 @@ namespace mqtt {
     byte willQoS = 0;
     boolean willRetain = true;
 
-    PubSubClient client(wifi::client);
+    WiFiClient wifiClient;
+    PubSubClient client(wifiClient);
 
     boolean connect() {
         return client.connect(name, user, password, willTopic, willQoS, willRetain, willMessage);

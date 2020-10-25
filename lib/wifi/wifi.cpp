@@ -19,7 +19,6 @@ namespace wifi {
     const char* ssids[] = { WIFI_SSIDS };
     const char* passwords[] = { WIFI_PSWS };
 
-    WiFiClient client;
     ESP8266WiFiMulti multiclient;
 
     void setup_wifi(const char* hostname) {
@@ -29,6 +28,7 @@ namespace wifi {
             multiclient.addAP(ssids[i], passwords[i]);
         }
         Serial.print("Connecting to wifi");
+        WiFi.hostname(hostname);
         WiFi.mode(WIFI_STA);
         while (multiclient.run(connectTimeoutMs) != WL_CONNECTED) {
             delay(1000);
