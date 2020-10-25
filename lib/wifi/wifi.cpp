@@ -1,5 +1,9 @@
 #include "wifi.h"
 
+#ifndef WIFI_SSID
+    #define WIFI_SSID ""
+#endif
+
 #ifndef WIFI_PSW
     #define WIFI_PSW ""
 #endif
@@ -8,21 +12,26 @@
     #define OTA_PSW ""
 #endif
 
+// WiFi connect timeout per AP. Increase when connecting takes longer.
+const uint32_t connectTimeoutMs = 1000;
+
 namespace wifi {
-    const char* ssid = "D-Link-Fibra";
-    const char* password = WIFI_PSW;
+    const char* ssids[] = { WIFI_SSIDS };
+    const char* passwords[] = { WIFI_PSWS };
 
-    WiFiClient client;
+    ESP8266WiFiMulti multiclient;
 
-    void setup_wifi() {
+    void setup_wifi(const char* hostname) {
         delay(10);
-        Serial.println();
-        Serial.print("Connecting to ");
-        Serial.println(ssid);
+        int networkCount = sizeof(ssids)/sizeof(ssids[0]);
+        for (int i = 0; i < networkCount; i++) {
+            multiclient.addAP(ssids[i], passwords[i]);
+        }
+        Serial.print("Connecting to wifi");
+        WiFi.hostname(hostname);
         WiFi.mode(WIFI_STA);
-        WiFi.begin(ssid, password);
-        while (WiFi.status() != WL_CONNECTED) {
-            delay(500);
+        while (multiclient.run(connectTimeoutMs) != WL_CONNECTED) {
+            delay(1000);
             Serial.print(".");
         }
         randomSeed(micros());
@@ -70,7 +79,7 @@ namespace wifi {
     }
 
     void setup(const char* hostname) {
-        setup_wifi();
+        setup_wifi(hostname);
         setup_OTA(hostname);
     }
 

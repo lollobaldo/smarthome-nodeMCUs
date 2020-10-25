@@ -23,6 +23,7 @@
 #endif
 
 const char* concat(const char* s1, const char* s2);
+const char* concat(const char* s1, const char* s2, const char* s3);
 
 
 template<typename T, typename A>

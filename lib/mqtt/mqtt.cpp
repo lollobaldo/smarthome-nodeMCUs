@@ -20,17 +20,18 @@ namespace mqtt {
     const char* user = MQTT_PSW;
     const char* password = "";
 
-    const char* cDebug = "debug";
     const char* cInput;
     const char* cLog;
 
     const char* connectMessage;
     const char* willTopic;
     const char* willMessage;
+
     byte willQoS = 0;
     boolean willRetain = true;
 
-    PubSubClient client(wifi::client);
+    WiFiClient wifiClient;
+    PubSubClient client(wifiClient);
 
     boolean connect() {
         return client.connect(name, user, password, willTopic, willQoS, willRetain, willMessage);
@@ -41,7 +42,7 @@ namespace mqtt {
         while (!client.connected()) {
             DebugPrint("Attempting MQTT connection...");
             // Attempt to connect
-            if (client.connect(name, user, password)) {
+            if (connect()) {
                 DebugPrintln("connected");
                 // Once connected, publish an announcement and resubscribe
                 client.publish(cLog, connectMessage);
@@ -59,8 +60,8 @@ namespace mqtt {
     void setup(const char* clientName, const char* channelInput, callbackType callback) {
         name = clientName;
         cInput = channelInput;
-        connectMessage = concat(clientName, " connected");
-        willMessage = concat(clientName, " disconnected");
+        connectMessage = concat("INF: ", clientName, " connected.");
+        willMessage = concat("ERR: ", clientName, " disconnected");
         cLog = concat("logs/", channelInput);
         client.setServer(server, port);
         client.setCallback(callback);

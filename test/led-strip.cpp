@@ -103,8 +103,8 @@ TEST(Color, Stream) {
         "rgb(255, 119, 0)", c1.toString().c_str());
 }
 
-TEST(Color, Fade) {
-    Color c = fade(Color(0xFF7700), 0.3);
+TEST(Color, brightness) {
+    Color c = brightness(Color(0xFF7700), 0.3);
     EXPECT_EQ(76, c.red);
     EXPECT_EQ(35, c.green);
     EXPECT_EQ(0, c.blue);
@@ -183,8 +183,8 @@ TEST(Modes, Fade) {
     unique_ptr<ProgramMode> pm(new Fade(cols));
     unsigned long millis = millis();
     EXPECT_EQ(ORANGE, pm->nextColor(millis + 0));
-    EXPECT_EQ(fade(ORANGE, 0.5), pm->nextColor(millis + 500));
-    EXPECT_EQ(fade(ORANGE, 0.25), pm->nextColor(millis + 750));
+    EXPECT_EQ(brightness(ORANGE, 0.5), pm->nextColor(millis + 500));
+    EXPECT_EQ(brightness(ORANGE, 0.25), pm->nextColor(millis + 750));
     EXPECT_EQ(BLACK, pm->nextColor(millis + 1000));
 }
 
