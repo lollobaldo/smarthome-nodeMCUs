@@ -4,6 +4,7 @@
 
 #include <unity.h>
 
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <string>
@@ -187,40 +188,3 @@ TEST(Modes, Fade) {
     EXPECT_EQ(brightness(ORANGE, 0.25), pm->nextColor(millis + 750));
     EXPECT_EQ(BLACK, pm->nextColor(millis + 1000));
 }
-
-
-// TEST(Modes, FadeColor1) {
-//     unique_ptr<ProgramMode> pm(new FadeColor(ORANGE));
-//     unsigned long millis = millis();
-//     EXPECT_EQ(ORANGE, pm->nextColor(millis + 0));
-//     EXPECT_EQ(BLACK, pm->nextColor(millis + 500));
-//     EXPECT_EQ(fade(ORANGE, 0.5), pm->nextColor(millis + 750));
-//     EXPECT_EQ(ORANGE, pm->nextColor(millis + 1000));
-// }
-
-// TEST(Modes, FadeColor2) {
-//     unique_ptr<ProgramMode> pm(new FadeColor(ORANGE, 100));
-//     unsigned long millis = millis();
-//     EXPECT_EQ(ORANGE, pm->nextColor(millis + 0));
-//     EXPECT_EQ(BLACK, pm->nextColor(millis + 50));
-//     EXPECT_EQ(fade(ORANGE, 0.5), pm->nextColor(millis + 75));
-//     EXPECT_EQ(ORANGE, pm->nextColor(millis + 100));
-// }
-
-// TEST(Modes, BlinkRainbow1) {
-//     unique_ptr<ProgramMode> pm(new BlinkRainbow());
-//     unsigned long millis = millis();
-//     EXPECT_EQ(RED, pm->nextColor(millis + 0));
-//     EXPECT_EQ(ORANGE, pm->nextColor(millis + 1000));
-//     EXPECT_EQ(BLUE, pm->nextColor(millis + 4000));
-//     EXPECT_EQ(RED, pm->nextColor(millis + 6000));
-// }
-
-// TEST(Modes, BlinkRainbow2) {
-//     unique_ptr<ProgramMode> pm(new BlinkRainbow(100));
-//     unsigned long millis = millis();
-//     EXPECT_EQ(RED, pm->nextColor(millis + 0));
-//     EXPECT_EQ(ORANGE, pm->nextColor(millis + 100));
-//     EXPECT_EQ(BLUE, pm->nextColor(millis + 400));
-//     EXPECT_EQ(RED, pm->nextColor(millis + 600));
-// }

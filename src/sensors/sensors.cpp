@@ -4,7 +4,7 @@
 #include <wifi.h>
 
 #include <Arduino.h>
-#include <DHT.h>
+#include <DHTesp.h>
 #include <PubSubClient.h>
 
 #include <string>
@@ -13,10 +13,11 @@ using namespace std;
 const char* clientName = "ESP--sensors";
 
 const int dhtPin = D4;
-const int dhtType = DHT11;
-DHT dht(dhtPin, dhtType);
+const DHTesp::DHT_MODEL_t dhtType = DHTesp::DHT11;
+// DHT dht(dhtPin, dhtType);
+DHTesp dht;
 
-const long probingTime = 1*60*1000L;
+const long probingTime = 5*60*1000L;
 
 const char* channelCommands = "sensors/commands";
 const char* channelLog = "logs/sensors";
@@ -25,11 +26,14 @@ const char* channelHumidity = "sensors/humidity";
 const char* channelHeatIndex = "sensors/heatIndex";
 
 void sense() {
-    // Reading temperature or humidity takes about 250 milliseconds!
-    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-    float h = dht.readHumidity();
-    // Read temperature as Celsius (the default)
-    float t = dht.readTemperature();
+    // // Reading temperature or humidity takes about 250 milliseconds!
+    // // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+    // float h = dht.readHumidity();
+    // // Read temperature as Celsius (the default)
+    // float t = dht.readTemperature();
+
+    float h = dht.getHumidity();
+    float t = dht.getTemperature();
 
     DebugPrint(h);
     DebugPrint(t);
@@ -101,7 +105,8 @@ void setup() {
     DebugPrintln("Booting");
     wifi::setup(clientName);
     mqtt::setup(clientName, channelCommands, callback);
-    dht.begin();
+    // dht.begin();
+    dht.setup(dhtPin, dhtType);
 }
 
 void loop() {
