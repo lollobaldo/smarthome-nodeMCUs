@@ -21,8 +21,14 @@ const char* channelLog = "logs/lights/leds";
 const char* channelColor = "lights/leds";
 const char* channelBrightness = "lights/leds/brightness";
 
+// White lights use one pin for brightness (W)
+//  and one for temperature (T) (2700-6500K)
+const uint8_t pin_W = 5;
+const uint8_t pin_T = 13;
+const uint8_t pin_R = 4;
+const uint8_t pin_G = 12;
+const uint8_t pin_B = 14;
 
-int rgbPins[3] = {D5, D6, D7};
 
 void setColor(Color color);
 
@@ -33,10 +39,20 @@ Color lastColor(colors::BLACK);
 
 void changeMode(char* command) {
     logger::log(LogLevel::INFO, channelLog, concat("Changing mode to: ", command));
-
+    analogWrite(pin_W, 0);
     // Select commands based on first character
     ProgramMode* newProgramMode;
     switch(*command++) {
+        case 'W':
+            newProgramMode = new SolidColor(colors::BLACK);
+            analogWrite(pin_W, 1023);
+            analogWrite(pin_T, 0);
+            break;
+        case 'C':
+            newProgramMode = new SolidColor(colors::BLACK);
+            analogWrite(pin_W, 1023);
+            analogWrite(pin_T, 1023);
+            break;
         case '#':
             newProgramMode = new SolidColor(Color (command));
             break;
@@ -62,8 +78,6 @@ void changeMode(char* command) {
             return;
     }
     programMode.reset(newProgramMode);
-    brightness = 1;
-    mqtt::client.publish(channelBrightness, "1");
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -106,9 +120,9 @@ void setColor(Color color) {
     short g = round(4.01 * gamma_corrected.green);
     short b = round(4.01 * gamma_corrected.blue);
 
-    analogWrite(rgbPins[0], r);
-    analogWrite(rgbPins[1], g);
-    analogWrite(rgbPins[2], b);
+    analogWrite(pin_R, r);
+    analogWrite(pin_G, g);
+    analogWrite(pin_B, b);
 }
 
 inline void mainLoop() {
