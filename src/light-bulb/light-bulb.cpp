@@ -39,7 +39,6 @@ Color lastColor(colors::BLACK);
 
 void changeMode(char* command) {
     logger::log(LogLevel::INFO, channelLog, concat("Changing mode to: ", command));
-    analogWrite(pin_W, 0);
     // Select commands based on first character
     ProgramMode* newProgramMode;
     switch(*command++) {
@@ -52,6 +51,10 @@ void changeMode(char* command) {
             newProgramMode = new SolidColor(colors::BLACK);
             analogWrite(pin_W, 1023);
             analogWrite(pin_T, 1023);
+            break;
+        case '/':
+            newProgramMode = new SolidColor(colors::BLACK);
+            analogWrite(pin_W, 0);
             break;
         case '#':
             newProgramMode = new SolidColor(Color (command));
@@ -99,9 +102,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if (channel == channelColor) {
         DebugPrintln("In change mode");
         changeMode(command);
-    } else if (channel == channelBrightness) {
-        DebugPrintln("In brightness mode");
-        brightness = strtod(command, NULL) / 100;
     } else {
         DebugPrint("Unsupported topic: ");
         DebugPrintln(topic);
