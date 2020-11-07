@@ -13,7 +13,7 @@
 #endif
 
 // WiFi connect timeout per AP. Increase when connecting takes longer.
-const uint32_t connectTimeoutMs = 1000;
+const uint32_t connectTimeoutMs = 500;
 
 namespace wifi {
     const char* ssids[] = { WIFI_SSIDS };
@@ -22,7 +22,6 @@ namespace wifi {
     ESP8266WiFiMulti multiclient;
 
     void setup_wifi(const char* hostname) {
-        delay(10);
         int networkCount = sizeof(ssids)/sizeof(ssids[0]);
         for (int i = 0; i < networkCount; i++) {
             multiclient.addAP(ssids[i], passwords[i]);
@@ -31,7 +30,7 @@ namespace wifi {
         WiFi.hostname(hostname);
         WiFi.mode(WIFI_STA);
         while (multiclient.run(connectTimeoutMs) != WL_CONNECTED) {
-            delay(1000);
+            delay(100);
             Serial.print(".");
         }
         randomSeed(micros());
