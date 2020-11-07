@@ -17,16 +17,14 @@ using namespace std;
 #endif
 const char* clientName = "ESP--lights-bulbs-"CLIENT_NAME;
 
-const char* channelLog = "logs/lights/leds";
-const char* channelColor = "lights/leds";
-const char* channelBrightness = "lights/leds/brightness";
+const char* channelLog = "logs/lights/bulbs";
 
-const char* channel0 = "lights/leds/"CLIENT_NAME;
-const char* channel1 = "lights/leds";
+const char* channel0 = "lights/bulbs/"CLIENT_NAME;
+const char* channel1 = "lights/bulbs";
 const char* channel2 = "lights";
 // const char* channelBrightness = "lights/leds/brightness";
 
-vector<const char*> subscriptions{ channel0, channel0, channel0 };
+vector<const char*> subscriptions{ channel0, channel1, channel2 };
 
 
 // White lights use one pin for brightness (W)
@@ -112,7 +110,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     strncpy(command, message, strlen(message) + 1 );
 
 
-    if (channel == channelColor) {
+    if (true) {
         DebugPrintln("In change mode");
         changeMode(command);
     } else {
@@ -151,7 +149,7 @@ void setup() {
     Serial.begin(115200);
     DebugPrintln("Booting");
     wifi::setup(clientName);
-    mqtt::setup(clientName, channelColor, callback);
+    mqtt::setup(clientName, subscriptions, callback);
 }
 
 void loop() {

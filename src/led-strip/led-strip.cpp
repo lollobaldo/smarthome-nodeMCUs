@@ -24,7 +24,7 @@ const char* channel1 = "lights/leds";
 const char* channel2 = "lights";
 // const char* channelBrightness = "lights/leds/brightness";
 
-vector<const char*> subscriptions{ channel0, channel0, channel0 };
+vector<const char*> subscriptions{ channel0, channel1, channel2 };
 
 int rgbPins[3] = {D5, D6, D7};
 

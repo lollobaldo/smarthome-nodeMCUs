@@ -22,6 +22,7 @@ namespace mqtt {
     const char* password = "";
 
     vector<const char*> topics;
+
     const char* cLog;
 
     const char* connectMessage;
@@ -47,7 +48,7 @@ namespace mqtt {
                 DebugPrintln("connected");
                 // Once connected, publish an announcement and resubscribe
                 client.publish(cLog, connectMessage);
-                for (auto &t: topics ) {
+                for (auto &t: topics) {
                     client.subscribe(t);
                 }
             } else {
