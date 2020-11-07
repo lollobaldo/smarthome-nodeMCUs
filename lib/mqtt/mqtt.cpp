@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 
+#include <vector>
 #include <string>
 using namespace std;
 
@@ -20,7 +21,7 @@ namespace mqtt {
     const char* user = MQTT_PSW;
     const char* password = "";
 
-    const char* cInput;
+    vector<const char*> topics;
     const char* cLog;
 
     const char* connectMessage;
@@ -46,7 +47,9 @@ namespace mqtt {
                 DebugPrintln("connected");
                 // Once connected, publish an announcement and resubscribe
                 client.publish(cLog, connectMessage);
-                client.subscribe(cInput);
+                for (auto &t: topics ) {
+                    client.subscribe(t);
+                }
             } else {
                 DebugPrint("failed, rc=");
                 DebugPrint(client.state());
@@ -57,12 +60,12 @@ namespace mqtt {
         }
     }
 
-    void setup(const char* clientName, const char* channelInput, callbackType callback) {
+    void setup(const char* clientName, vector<const char*> subscriptions, callbackType callback) {
         name = clientName;
-        cInput = channelInput;
+        topics = subscriptions;
         connectMessage = concat("INF: ", clientName, " connected.");
         willMessage = concat("ERR: ", clientName, " disconnected");
-        cLog = concat("logs/", channelInput);
+        cLog = concat("logs/", subscriptions[0]);
         client.setServer(server, port);
         client.setCallback(callback);
     }

@@ -15,12 +15,16 @@ using namespace std;
 #ifndef CLIENT_NAME
     #define CLIENT_NAME "ESP--anonymous"
 #endif
-const char* clientName = CLIENT_NAME;
+const char* clientName = "ESP--lights-leds-"CLIENT_NAME;
 
 const char* channelLog = "logs/lights/leds";
-const char* channelColor = "lights/leds";
-const char* channelBrightness = "lights/leds/brightness";
 
+const char* channel0 = "lights/leds/"CLIENT_NAME;
+const char* channel1 = "lights/leds";
+const char* channel2 = "lights";
+// const char* channelBrightness = "lights/leds/brightness";
+
+vector<const char*> subscriptions{ channel0, channel0, channel0 };
 
 int rgbPins[3] = {D5, D6, D7};
 
@@ -62,8 +66,6 @@ void changeMode(char* command) {
             return;
     }
     programMode.reset(newProgramMode);
-    brightness = 1;
-    mqtt::client.publish(channelBrightness, "1");
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -82,12 +84,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
     strncpy(command, message, strlen(message) + 1 );
 
 
-    if (channel == channelColor) {
+    if (true) {
         DebugPrintln("In change mode");
         changeMode(command);
-    } else if (channel == channelBrightness) {
-        DebugPrintln("In brightness mode");
-        brightness = strtod(command, NULL) / 100;
+    // } else if (channel == channelBrightness) {
+        // DebugPrintln("In brightness mode");
+        // brightness = strtod(command, NULL) / 100;
     } else {
         DebugPrint("Unsupported topic: ");
         DebugPrintln(topic);
@@ -124,7 +126,7 @@ void setup() {
     Serial.begin(115200);
     DebugPrintln("Booting");
     wifi::setup(clientName);
-    mqtt::setup(clientName, channelColor, callback);
+    mqtt::setup(clientName, subscriptions, callback);
 }
 
 void loop() {

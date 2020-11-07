@@ -30,7 +30,7 @@ namespace wifi {
         WiFi.hostname(hostname);
         WiFi.mode(WIFI_STA);
         while (multiclient.run(connectTimeoutMs) != WL_CONNECTED) {
-            delay(100);
+            delay(500);
             Serial.print(".");
         }
         randomSeed(micros());

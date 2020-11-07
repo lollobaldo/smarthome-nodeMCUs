@@ -3,15 +3,16 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 
+#include <vector>
+
 typedef void callbackType (char* topic, byte* payload, unsigned int length);
 
 namespace mqtt {
-    extern const char* cDebug;
-    extern const char* cInput;
+    extern std::vector<const char*> topics;
     extern const char* cLog;
 
     extern PubSubClient client;
 
-    void setup(const char* clientName, const char* channelInput, callbackType callback);
+    void setup(const char* clientName, std::vector<const char*> subscriptions, callbackType callback);
     void loop();
 }

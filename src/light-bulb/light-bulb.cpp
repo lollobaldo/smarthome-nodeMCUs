@@ -15,11 +15,19 @@ using namespace std;
 #ifndef CLIENT_NAME
     #define CLIENT_NAME "ESP--anonymous"
 #endif
-const char* clientName = CLIENT_NAME;
+const char* clientName = "ESP--lights-bulbs-"CLIENT_NAME;
 
 const char* channelLog = "logs/lights/leds";
 const char* channelColor = "lights/leds";
 const char* channelBrightness = "lights/leds/brightness";
+
+const char* channel0 = "lights/leds/"CLIENT_NAME;
+const char* channel1 = "lights/leds";
+const char* channel2 = "lights";
+// const char* channelBrightness = "lights/leds/brightness";
+
+vector<const char*> subscriptions{ channel0, channel0, channel0 };
+
 
 // White lights use one pin for brightness (W)
 //  and one for temperature (T) (2700-6500K)
@@ -46,6 +54,11 @@ void changeMode(char* command) {
             newProgramMode = new SolidColor(colors::BLACK);
             analogWrite(pin_W, 1023);
             analogWrite(pin_T, 0);
+            break;
+        case 'N':
+            newProgramMode = new SolidColor(colors::BLACK);
+            analogWrite(pin_W, 1023);
+            analogWrite(pin_T, 512);
             break;
         case 'C':
             newProgramMode = new SolidColor(colors::BLACK);
