@@ -22,7 +22,7 @@ const char* concat(const char* s1, const char* s2, const char* s3) {
     return cstr;
 }
 
-vector<string> split(string s) {
+vector<string> split(const string& s) {
     istringstream iss(s);
     return {
         istream_iterator<string>{iss},

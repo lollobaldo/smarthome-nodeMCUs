@@ -17,8 +17,6 @@ using namespace std;
 #endif
 const char* clientName = "ESP--lights-bulbs-"CLIENT_NAME;
 
-const char* channelLog = "logs/lights/bulbs";
-
 const char* channel0 = "lights/bulbs/"CLIENT_NAME;
 const char* channel1 = "lights/bulbs";
 const char* channel2 = "lights";
@@ -35,16 +33,13 @@ const uint8_t pin_R = 4;
 const uint8_t pin_G = 12;
 const uint8_t pin_B = 14;
 
-
-void setColor(Color color);
-
 float brightness = 1;
 unique_ptr<ProgramMode> programMode(new SolidColor(colors::BLACK));
 
 Color lastColor(colors::BLACK);
 
-void changeMode(char* command) {
-    logger::log(LogLevel::INFO, channelLog, concat("Changing mode to: ", command));
+static void changeMode(char* command) {
+    logger::log(concat("New mode: ", command));
     // Select commands based on first character
     ProgramMode* newProgramMode;
     switch(*command++) {
@@ -70,34 +65,34 @@ void changeMode(char* command) {
         case '#':
             newProgramMode = new SolidColor(Color (command));
             break;
-        case '!':
-            newProgramMode = new BlinkColor(Color (command));
-            break;
-        case '~':
-            newProgramMode = new FadeColor(Color (command));
-            break;
-        case 'R':
-            newProgramMode = new JumpRainbow();
-            break;
-        case 'r':
-            newProgramMode = new FadeRainbow();
-            break;
-        case '%':
-            newProgramMode = new Fade(colors::string2vector(string (command)));
-            break;
+        // case '!':
+        //     newProgramMode = new BlinkColor(Color (command));
+        //     break;
+        // case '~':
+        //     newProgramMode = new FadeColor(Color (command));
+        //     break;
+        // case 'R':
+        //     newProgramMode = new JumpRainbow();
+        //     break;
+        // case 'r':
+        //     newProgramMode = new FadeRainbow();
+        //     break;
+        // case '%':
+        //     newProgramMode = new Fade(colors::string2vector(string (command)));
+        //     break;
         default:
             DebugPrintln("In default");
             DebugPrintln(command);
-            logger::log(LogLevel::WARN, channelLog, concat("Mode not supported: ", command));
+            logger::log(LogLevel::WARN, concat("Mode not supported: ", command));
             return;
     }
     programMode.reset(newProgramMode);
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-    DebugPrint("Message arrived in topic ");
+    DebugPrint("[");
     DebugPrint(topic);
-    DebugPrint(": ");
+    DebugPrint("] ");
     // add string terminator
     char* message = (char*) payload;
     message[length] = '\0';
@@ -122,7 +117,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     delete command;
 }
 
-void setColor(Color color) {
+static inline void setColor(Color color) {
     // Multiply by 4 to account for NodeMCU increased resolution (range 0-1023)
     // Make it 4.01 to map 255 -> 1023
     colors::channels gamma_corrected = colors::gamma(color);
@@ -136,7 +131,7 @@ void setColor(Color color) {
     analogWrite(pin_B, b);
 }
 
-inline void mainLoop() {
+static inline void mainLoop() {
     Color next = programMode->nextColor(millis());
     if (lastColor != next) {
         lastColor = next;

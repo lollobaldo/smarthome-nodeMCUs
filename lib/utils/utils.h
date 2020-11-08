@@ -32,4 +32,4 @@ T atWithOverflow (const std::vector<T, A>& v, int i) {
     return v[i % s];
 }
 
-std::vector<std::string> split(std::string s);
+std::vector<std::string> split(const std::string& s);

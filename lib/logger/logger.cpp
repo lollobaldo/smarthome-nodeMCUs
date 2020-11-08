@@ -3,7 +3,7 @@
 
 #include "logger.h"
 
-char* loglevel2String(LogLevel ll) {
+static char* loglevel2String(LogLevel ll) {
     switch(ll) {
         case LogLevel::INFO: return "INF: ";
         case LogLevel::LOG: return "LOG: ";
@@ -14,13 +14,19 @@ char* loglevel2String(LogLevel ll) {
 }
 
 namespace logger {
-    bool log(LogLevel ll, const char* topic, const char* m) {
+    bool log(LogLevel ll, const char* t, const char* m, bool r) {
         const char* message = concat(loglevel2String(ll), m);
-        return log(topic, message, true);
+        return log(t, message, r);
     }
 
-    bool log(const char* topic, const char* message) {
-        return log(topic, message, false);
+    bool log(LogLevel ll, const char* m) {
+        const char* message = concat(loglevel2String(ll), m);
+        return log(mqtt::cLog, message, true);
+    }
+
+    bool log(const char* m) {
+        const char* message = concat(loglevel2String(LogLevel::INFO), m);
+        return log(mqtt::cLog, message, true);
     }
 
     bool log(const char* topic, const char* message, bool retained) {

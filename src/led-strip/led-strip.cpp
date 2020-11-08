@@ -36,7 +36,7 @@ unique_ptr<ProgramMode> programMode(new SolidColor(colors::BLACK));
 Color lastColor(colors::BLACK);
 
 void changeMode(char* command) {
-    logger::log(LogLevel::INFO, channelLog, concat("Changing mode to: ", command));
+    logger::log(LogLevel::INFO, concat("Changing mode to: ", command));
 
     // Select commands based on first character
     ProgramMode* newProgramMode;
@@ -62,7 +62,7 @@ void changeMode(char* command) {
         default:
             DebugPrintln("In default");
             DebugPrintln(command);
-            logger::log(LogLevel::WARN, channelLog, concat("Mode not supported: ", command));
+            logger::log(LogLevel::WARN, concat("Mode not supported: ", command));
             return;
     }
     programMode.reset(newProgramMode);
