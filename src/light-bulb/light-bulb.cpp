@@ -9,20 +9,20 @@
 #include <PubSubClient.h>
 
 #include <string>
-using namespace std;
+// using namespace std;
 
 
 #ifndef CLIENT_NAME
-    #define CLIENT_NAME "ESP--anonymous"
+    #define CLIENT_NAME "anonymous"
 #endif
-const char* clientName = "ESP--lights-bulbs-"CLIENT_NAME;
+const char* clientName = "ESP--lights-bulbs-" CLIENT_NAME;
 
-const char* channel0 = "lights/bulbs/"CLIENT_NAME;
+const char* channel0 = "lights/bulbs/" CLIENT_NAME;
 const char* channel1 = "lights/bulbs";
 const char* channel2 = "lights";
 // const char* channelBrightness = "lights/leds/brightness";
 
-vector<const char*> subscriptions{ channel0, channel1, channel2 };
+std::vector<const char*> subscriptions{ channel0, channel1, channel2 };
 
 
 // White lights use one pin for brightness (W)
@@ -33,8 +33,21 @@ const uint8_t pin_R = 4;
 const uint8_t pin_G = 12;
 const uint8_t pin_B = 14;
 
+// class State {
+//     public:
+//         Color old_color;
+//         Color new_color;
+//         Color current_color;
+//         float brightness = 1;
+//         ProgramMode* mode;
+//         State();
+//         std::string toString();
+// };
+
+
+
 float brightness = 1;
-unique_ptr<ProgramMode> programMode(new SolidColor(colors::BLACK));
+std::unique_ptr<ProgramMode> programMode(new SolidColor(colors::BLACK));
 
 Color lastColor(colors::BLACK);
 
@@ -99,7 +112,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrintln(message);
 
     // Copy topic and payload as they get overwritten
-    const string channel = string(topic);
+    const std::string channel = std::string(topic);
     // const string command = string(message);
     char* command = new char[strlen(message) + 1];
     strncpy(command, message, strlen(message) + 1 );

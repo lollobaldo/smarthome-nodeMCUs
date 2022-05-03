@@ -1,7 +1,7 @@
 #include <utils.h>
 
 #include "modes.h"
-using namespace std;
+// using namespace std;
 using namespace colors;
 
 #ifdef UNIT_TEST
@@ -24,7 +24,7 @@ Color SolidColor::nextColor(unsigned long millis) {
 
 // JUMP
 
-Jump::Jump(vector<Color> cs, int i) {
+Jump::Jump(std::vector<Color> cs, int i) {
     colors = cs;
     interval = i;
     start = millis();
@@ -43,7 +43,7 @@ JumpRainbow::JumpRainbow(int i)
 
 // FADE
 
-Fade::Fade(vector<Color> cs, int i) {
+Fade::Fade(std::vector<Color> cs, int i) {
     colors = cs;
     interval = i;
     start = millis();

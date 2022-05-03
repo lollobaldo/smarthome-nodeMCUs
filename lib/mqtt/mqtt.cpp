@@ -6,7 +6,7 @@
 
 #include <vector>
 #include <string>
-using namespace std;
+// using namespace std;
 
 #include "mqtt.h"
 
@@ -21,7 +21,7 @@ namespace mqtt {
     const char* user = MQTT_PSW;
     const char* password = "";
 
-    vector<const char*> topics;
+    std::vector<const char*> topics;
 
     const char* cLog;
 
@@ -61,7 +61,7 @@ namespace mqtt {
         }
     }
 
-    void setup(const char* clientName, vector<const char*> subscriptions, callbackType callback) {
+    void setup(const char* clientName, std::vector<const char*> subscriptions, callbackType callback) {
         name = clientName;
         topics = subscriptions;
         connectMessage = concat("INF: ", clientName, " connected.");

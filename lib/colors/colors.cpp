@@ -11,7 +11,7 @@
 
 #include "colors.h"
 
-using namespace std;
+// using namespace std;
 using namespace colors;
 
 extern const uint8_t PROGMEM gamma8[];
@@ -19,7 +19,7 @@ extern const uint8_t PROGMEM gamma8[];
 Color::Color()
     : Color("000000") {}
 
-Color::Color(const string& hex_color)
+Color::Color(const std::string& hex_color)
     : Color(hex_color.c_str()) {}
 
 Color::Color(const char* hex_color)
