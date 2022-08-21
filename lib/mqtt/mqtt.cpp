@@ -54,7 +54,7 @@ namespace mqtt {
             } else {
                 DebugPrint("failed, rc=");
                 DebugPrint(client.state());
-                DebugPrintln(" try again in 5 seconds");
+                DebugPrintln(" try again in 3 seconds");
                 // Wait 3 seconds before retrying
                 delay(3000);
             }
