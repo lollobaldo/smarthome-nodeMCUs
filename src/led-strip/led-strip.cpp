@@ -41,9 +41,10 @@ void changeMode(char* command) {
     // Select commands based on first character
     ProgramMode* newProgramMode;
     switch(*command++) {
+        case 'F':
+            newProgramMode = new SolidColor(colors::BLACK);
+            break;
         case 'N':
-        case 'W':
-        case 'C':
             command++;
         case '#':
             newProgramMode = new SolidColor(Color (command));
