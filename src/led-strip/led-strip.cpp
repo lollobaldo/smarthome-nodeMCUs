@@ -9,29 +9,29 @@
 #include <PubSubClient.h>
 
 #include <string>
-using namespace std;
+// using namespace std;
 
 
 #ifndef CLIENT_NAME
     #define CLIENT_NAME "ESP--anonymous"
 #endif
-const char* clientName = "ESP--lights-leds-"CLIENT_NAME;
+const char* clientName = "ESP--lights-leds-" CLIENT_NAME;
 
 const char* channelLog = "logs/lights/leds";
 
-const char* channel0 = "lights/leds/"CLIENT_NAME;
+const char* channel0 = "lights/leds/" CLIENT_NAME;
 const char* channel1 = "lights/leds";
 const char* channel2 = "lights";
 // const char* channelBrightness = "lights/leds/brightness";
 
-vector<const char*> subscriptions{ channel0, channel1, channel2 };
+std::vector<const char*> subscriptions{ channel0, channel1, channel2 };
 
 int rgbPins[3] = {D5, D6, D7};
 
 void setColor(Color color);
 
 float brightness = 1;
-unique_ptr<ProgramMode> programMode(new SolidColor(colors::BLACK));
+std::unique_ptr<ProgramMode> programMode(new SolidColor(colors::BLACK));
 
 Color lastColor(colors::BLACK);
 
@@ -41,6 +41,10 @@ void changeMode(char* command) {
     // Select commands based on first character
     ProgramMode* newProgramMode;
     switch(*command++) {
+        case 'N':
+        case 'W':
+        case 'C':
+            command++;
         case '#':
             newProgramMode = new SolidColor(Color (command));
             break;
@@ -57,7 +61,7 @@ void changeMode(char* command) {
             newProgramMode = new FadeRainbow();
             break;
         case '%':
-            newProgramMode = new Fade(colors::string2vector(string (command)));
+            newProgramMode = new Fade(colors::string2vector(std::string (command)));
             break;
         default:
             DebugPrintln("In default");
@@ -78,7 +82,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrintln(message);
 
     // Copy topic and payload as they get overwritten
-    const string channel = string(topic);
+    const std::string channel = std::string(topic);
     // const string command = string(message);
     char* command = new char[strlen(message) + 1];
     strncpy(command, message, strlen(message) + 1 );

@@ -33,16 +33,16 @@ const uint8_t pin_R = 4;
 const uint8_t pin_G = 12;
 const uint8_t pin_B = 14;
 
-// class State {
-//     public:
-//         Color old_color;
-//         Color new_color;
-//         Color current_color;
-//         float brightness = 1;
-//         ProgramMode* mode;
-//         State();
-//         std::string toString();
-// };
+class State {
+    public:
+        Color old_color;
+        Color new_color;
+        Color current_color;
+        float brightness = 1;
+        ProgramMode* mode;
+        State();
+        std::string toString();
+};
 
 
 

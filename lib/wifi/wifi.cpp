@@ -18,28 +18,28 @@
 const uint32_t connectTimeoutMs = 500;
 
 namespace wifi {
-    const char* ssids[] = { WIFI_SSIDS };
-    const char* passwords[] = { WIFI_PSWS };
+    // const char* ssids[] = { WIFI_SSIDS };
+    // const char* passwords[] = { WIFI_PSWS };
 
-    ESP8266WiFiMulti multiclient;
+    // ESP8266WiFiMulti multiclient;
+    WiFiManager wm;
 
     void setup_wifi(const char* hostname) {
-        int networkCount = sizeof(ssids)/sizeof(ssids[0]);
-        for (int i = 0; i < networkCount; i++) {
-            multiclient.addAP(ssids[i], passwords[i]);
-        }
-        DebugPrintln("Connecting to wifi");
-        WiFi.hostname(hostname);
         WiFi.mode(WIFI_STA);
-        while (multiclient.run(connectTimeoutMs) != WL_CONNECTED) {
-            delay(500);
-            DebugPrint(".");
+        WiFi.hostname(hostname);
+        wm.setHostname(hostname);
+
+        bool res;
+        res = wm.autoConnect("AutoConnectAP","nodemcu"); // password protected ap
+        if(!res) {
+            DebugPrintln("Failed to connect.");
+            // ESP.restart();
+        } 
+        else {
+            DebugPrintln("WiFi connected");
+            DebugPrintln("IP address: ");
+            DebugPrintln(WiFi.localIP());
         }
-        randomSeed(micros());
-        DebugPrintln("");
-        DebugPrintln("WiFi connected");
-        DebugPrintln("IP address: ");
-        DebugPrintln(WiFi.localIP());
     }
 
     void setup_OTA(const char* hostname) {
