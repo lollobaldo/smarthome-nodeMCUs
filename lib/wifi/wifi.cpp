@@ -2,16 +2,12 @@
 
 #include "wifi.h"
 
-#ifndef WIFI_SSID
-    #define WIFI_SSID ""
+#ifndef AP_SSID
+    #define AP_SSID ""
 #endif
 
-#ifndef WIFI_PSW
-    #define WIFI_PSW ""
-#endif
-
-#ifndef OTA_PSW
-    #define OTA_PSW ""
+#ifndef AP_PSW
+    #define AP_PSW ""
 #endif
 
 // WiFi connect timeout per AP. Increase when connecting takes longer.
@@ -30,10 +26,10 @@ namespace wifi {
         wm.setHostname(hostname);
 
         bool res;
-        res = wm.autoConnect("AutoConnectAP","nodemcu"); // password protected ap
+        res = wm.autoConnect(AP_SSID, AP_PSW); // password protected ap
         if(!res) {
             DebugPrintln("Failed to connect.");
-            // ESP.restart();
+            wm.resetSettings();
         } 
         else {
             DebugPrintln("WiFi connected");

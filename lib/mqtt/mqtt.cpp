@@ -72,7 +72,7 @@ namespace mqtt {
     }
 
     void loop() {
-        if (!client.connected()) {
+        if (wifiClient.connected() && !client.connected()) {
             reconnect();
         }
         client.loop();
