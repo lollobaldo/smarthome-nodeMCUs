@@ -16,15 +16,15 @@
 #include <vector>
 #include <string>
 
-#ifndef MQTT_PSW
-    #define MQTT_PSW "(MQTT_PSW not defined)"
+#ifndef MQTT_USER
+    #error "MQTT_USER is not defined"
 #endif
 
 namespace mqtt {
     const char* server = "mqtt.flespi.io";
     const int port = 1883;
     const char* name;
-    const char* user = MQTT_PSW;
+    const char* user = MQTT_USER;
     const char* password = "";
 
     std::vector<const char*> topics;

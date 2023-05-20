@@ -15,12 +15,12 @@
     #error "Unsupported platform"
 #endif
 
-#ifndef AP_SSID
-    #define AP_SSID ""
+#ifndef AP_NAME
+    #error "AP_NAME is not defined"
 #endif
 
-#ifndef AP_PSW
-    #define AP_PSW ""
+#ifndef AP_PSWD
+    #define AP_PSWD "AP123456"
 #endif
 
 #define VERSION "0.0.1"
@@ -43,7 +43,7 @@ namespace wifi {
         wm.setHostname(hostname);
 
         bool res;
-        res = wm.autoConnect(AP_SSID, AP_PSW); // password protected ap
+        res = wm.autoConnect(AP_NAME, AP_PSWD); // password protected ap
         if(!res) {
             DebugPrintln("Failed to connect.");
             wm.resetSettings();
