@@ -24,7 +24,7 @@ jobs:
       run: pip install --upgrade platformio
 
     - name: Compile Firmware
-      run: pio run -e ${{ env.TARGET }}
+      run: pio run --verbose --environment ${{ env.TARGET }}
       env:
         DOTENV: ${{ secrets.DOTENV }}
 

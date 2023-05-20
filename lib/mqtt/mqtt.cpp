@@ -1,6 +1,7 @@
 #include "mqtt.h"
 
 #include <utils.h>
+
 #include <wifi.h>
 
 #if defined(ESP8266)
