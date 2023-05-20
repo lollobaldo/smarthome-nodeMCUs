@@ -4,6 +4,7 @@
 .vscode/launch.json
 .vscode/ipch
 
+__pycache__
 
 .env
 platformio.ini

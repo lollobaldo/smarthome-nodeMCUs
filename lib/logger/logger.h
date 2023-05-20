@@ -1,11 +1,11 @@
 enum LogLevel { INFO, LOG, WARN, ERROR };
 
-namespace logger {
-    bool log(LogLevel logLevel, const char* topic, const char* message, bool retained);
-    bool log(LogLevel logLevel, const char* message);
-    bool log(const char* message);
-    bool log(const char* topic, const char* message, bool retained);
-}
+// namespace logger {
+//     bool log(LogLevel logLevel, const char* topic, const char* message, bool retained);
+//     bool log(LogLevel logLevel, const char* message);
+//     bool log(const char* message);
+//     bool log(const char* topic, const char* message, bool retained);
+// }
 
 class Logger {
     public:

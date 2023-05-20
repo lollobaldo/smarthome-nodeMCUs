@@ -25,6 +25,9 @@ jobs:
 
     - name: Compile Firmware
       run: pio run -e ${{ env.TARGET }}
+      env:
+        DOTENV: ${{ secrets.DOTENV }}
+
     - name: Upload Firmware
       uses: actions/upload-artifact@v3
       with: 
