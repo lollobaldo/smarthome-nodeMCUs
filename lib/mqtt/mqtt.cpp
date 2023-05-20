@@ -1,14 +1,20 @@
+#include "mqtt.h"
+
 #include <utils.h>
 #include <wifi.h>
 
-#include <Arduino.h>
-#include <PubSubClient.h>
+#if defined(ESP8266)
+    #include <ESP8266WiFi.h>
+    #include <ESP8266WebServer.h>
+#elif defined(ESP32)
+    #include <WiFi.h>
+    #include <WebServer.h>
+#else
+    #error "Unsupported platform"
+#endif
 
 #include <vector>
 #include <string>
-// using namespace std;
-
-#include "mqtt.h"
 
 #ifndef MQTT_PSW
     #define MQTT_PSW "(MQTT_PSW not defined)"
@@ -72,7 +78,7 @@ namespace mqtt {
     }
 
     void loop() {
-        if (wifiClient.connected() && !client.connected()) {
+        if (!client.connected()) {
             reconnect();
         }
         client.loop();
