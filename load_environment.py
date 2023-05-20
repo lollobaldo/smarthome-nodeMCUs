@@ -1,10 +1,10 @@
-Import("env", "projenv")
+Import("env")
 
 import os
 
-dotenv = os.environ['DOTENV']
+dotenv = 'DOTENV' in os.environ and os.environ['DOTENV'] or ""
 
-if(dotenv == None):
+if(dotenv == ""):
     print("No dotenv environment variable set, reading from dotenv file")
     with open('.env') as f:
         for line in f:
@@ -19,7 +19,7 @@ for line in dotenv.splitlines():
         continue
     key, value = line.strip().split('=', 1)
     env_vars.append({'name': key, 'value': value}) # Save to a list
-    projenv.Append(CPPDEFINES=[
+    env.Append(CPPDEFINES=[
         (key, env.StringifyMacro(value)),
     ])
 

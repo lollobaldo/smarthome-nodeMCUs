@@ -7,30 +7,22 @@
 #include <PubSubClient.h>
 
 #include <string>
-using namespace std;
+// using namespace std;
 
-const char* clientName = "ESP--plants";
 
-const int sensorPin = A0;
-
-const long probingTime = 0.5*60*1000L;
+#ifndef CLIENT_NAME
+    #define CLIENT_NAME "ESP--anonymous"
+#endif
+const char* clientName = "ESP--plants-" CLIENT_NAME;
 
 const char* channelCommands = "plants/commands";
-const char* channelLog = "logs/plants";
-const char* channelOutput = "plants";
+const char* channelLogs = "logs/plants/" CLIENT_NAME;
+const char* channelOutput = "plants/" CLIENT_NAME;
 
-void sense() {
-    // 0-1023
-    int sensor_value= analogRead(sensorPin);
-    float output = sensor_value * 100 / 1023;
-    DebugPrint(F("Moisture: "));
-    DebugPrint(output);
+std::vector<const char*> subscriptions{ channelCommands };
 
-    // Convert to char* and publish. NOTE: 2sf.
-    char ch[7];
-    snprintf(ch, sizeof ch, "%f", output);
-    mqtt::client.publish(channelOutput, ch, true);
-}
+const int sensorPin = A0;
+const long probingTime = 0.5*60*1000L; // 30 seconds
 
 void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrint("Message arrived in topic ");
@@ -40,21 +32,19 @@ void callback(char* topic, byte* payload, unsigned int length) {
     char* message = (char*) payload;
     message[length] = '\0';
     DebugPrintln(message);
+}
 
-    // Copy topic and payload as they get overwritten
-    const string channel = string(topic);
-    // const string command = string(message);
-    char* command = new char[strlen(message) + 1];
-    strncpy(command, message, strlen(message) + 1 );
+void sense() {
+    // 0-1023
+    int sensor_value= analogRead(sensorPin);
+    float output = sensor_value * 100 / 1023;
+    DebugPrint(F("Moisture: "));
+    DebugPrintln(output);
 
-
-    if (channel == channelCommands) {
-        DebugPrintln("Command received");
-        sense();
-    }
-
-    // Deallocate memory
-    delete command;
+    // Convert to char* and publish. NOTE: 2sf.
+    char ch[7];
+    snprintf(ch, sizeof ch, "%f", output);
+    mqtt::client.publish(channelOutput, ch, true);
 }
 
 unsigned long lastRun = millis() ;
@@ -69,7 +59,7 @@ void setup() {
     Serial.begin(115200);
     DebugPrintln("Booting");
     wifi::setup(clientName);
-    mqtt::setup(clientName, channelCommands, callback);
+    mqtt::setup(clientName, subscriptions, callback);
 }
 
 void loop() {
