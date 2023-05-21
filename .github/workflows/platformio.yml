@@ -25,6 +25,12 @@ jobs:
     - name: Setup platformio cache
       run: export PLATFORMIO_CACHE_DIR=./.pio/cache
 
+    - name: DEBUG
+      run: ls -al
+
+    - name: DEBUG
+      run: ls -al ./.pio
+
     - name: Fetch cached build
       id: cache-primes
       uses: actions/cache@v3
@@ -46,7 +52,7 @@ jobs:
     - name: "Compile Firmware: ${{ matrix.target }}"
       uses: actions/upload-artifact@v3
       with: 
-        name: firmware_${{ matrix.target }}
+        name: firmware_${{ matrix.target }}.bin
         path: .pio/build/${{ matrix.target }}/firmware.bin
 
     # - name: Compile Filesystem
