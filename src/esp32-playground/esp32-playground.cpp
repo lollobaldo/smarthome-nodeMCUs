@@ -8,7 +8,7 @@
 #include <string>
 
 #ifndef CLIENT_NAME
-    #error "CLIENT_NAME is not defined"
+    #error message "CLIENT_NAME is not defined"
 #endif
 const char* clientName = "ESP32--playground-" CLIENT_NAME;
 
