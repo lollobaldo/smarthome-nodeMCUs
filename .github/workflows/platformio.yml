@@ -34,11 +34,12 @@ jobs:
         key: ${{ matrix.target }}
 
     - name: "Compile Firmware: ${{ matrix.target }}"
-      run:
-        pio run --verbose --environment ${{ matrix.target }}
-        cp .pio/build/${{ matrix.target }}/firmware.bin firmware_${{ matrix.target }}.bin
+      run: pio run --verbose --environment ${{ matrix.target }}
       env:
         DOTENV: ${{ secrets.DOTENV }}
+
+    - name: "Copy Firmware: ${{ matrix.target }}"
+      run: cp .pio/build/${{ matrix.target }}/firmware.bin firmware_${{ matrix.target }}.bin
 
     - name: "Upload Firmware: ${{ matrix.target }}"
       uses: actions/upload-artifact@v3
