@@ -34,16 +34,11 @@ jobs:
         key: ${{ matrix.target }}
 
     - name: "Compile Firmware: ${{ matrix.target }}"
-      run: pio run --verbose --environment ${{ matrix.target }}
+      run:
+        pio run --verbose --environment ${{ matrix.target }}
+        cp .pio/build/${{ matrix.target }}/firmware.bin firmware_${{ matrix.target }}.bin
       env:
         DOTENV: ${{ secrets.DOTENV }}
-
-    # - name: "Copy Firmware: ${{ matrix.target }}"
-    #   run: cp .pio/build/${{ matrix.target }}/firmware.bin
-    #   uses: actions/upload-artifact@v3
-    #   with: 
-    #     name: firmware_${{ matrix.target }}.bin
-    #     path: .pio/build/${{ matrix.target }}/firmware.bin
 
     - name: "Upload Firmware: ${{ matrix.target }}"
       uses: actions/upload-artifact@v3
@@ -80,7 +75,7 @@ jobs:
     - name: Release Firmware
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ./*/firmware.bin
+        artifacts: ./firmware_*.bin
         generateReleaseNotes: true
         artifactErrorsFailBuild: true
 
