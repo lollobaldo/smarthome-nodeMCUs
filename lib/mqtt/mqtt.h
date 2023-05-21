@@ -1,5 +1,3 @@
-#include <wifi.h>
-
 #include <Arduino.h>
 #include <PubSubClient.h>
 
