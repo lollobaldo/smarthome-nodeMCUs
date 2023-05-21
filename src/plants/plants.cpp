@@ -1,7 +1,7 @@
 #include <logger.h>
 #include <mqtt.h>
 #include <utils.h>
-#include <wifi.h>
+#include <wifiHandler.h>
 
 #include <Arduino.h>
 #include <PubSubClient.h>

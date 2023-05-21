@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [esp32playground]
+        target: [esp32playground, plants]
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
@@ -17,14 +17,31 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
+        cache: 'pip'
 
     - name: Install PlatformIO
-      run: pip install --upgrade platformio
+      run: pip install platformio
+
+    - name: Setup platformio cache
+      run: set PLATFORMIO_CACHE_DIR=./.pio/cache
+
+    - name: Fetch cached build
+      id: cache-primes
+      uses: actions/cache@v3
+      with:
+        path: "./.pio/cache"
+        key: ${{ matrix.target }}
 
     - name: "Compile Firmware: ${{ matrix.target }}"
       run: pio run --verbose --environment ${{ matrix.target }}
       env:
         DOTENV: ${{ secrets.DOTENV }}
+
+    - name: Cache build
+      uses: actions/cache/save@v3
+      with:
+        path: ./.pio/cache
+        key: ${{ matrix.target }}
 
     - name: "Compile Firmware: ${{ matrix.target }}"
       uses: actions/upload-artifact@v3
