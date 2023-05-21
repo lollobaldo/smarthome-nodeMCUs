@@ -23,7 +23,7 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Setup platformio cache
-      run: set PLATFORMIO_CACHE_DIR=./.pio/cache
+      run: export PLATFORMIO_CACHE_DIR=./.pio/cache
 
     - name: Fetch cached build
       id: cache-primes
@@ -46,7 +46,7 @@ jobs:
     - name: "Compile Firmware: ${{ matrix.target }}"
       uses: actions/upload-artifact@v3
       with: 
-        name: esp32-firmware
+        name: firmware_${{ matrix.target }}
         path: .pio/build/${{ matrix.target }}/firmware.bin
 
     # - name: Compile Filesystem
@@ -78,10 +78,9 @@ jobs:
     - name: Release Firmware
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ./*/firmware.bin
+        artifacts: ./*/firmware_*.bin
         generateReleaseNotes: true
         artifactErrorsFailBuild: true
-        allowUpdates: true
 
     # - name: Release Filesystem
     #   uses: ncipollo/release-action@v1
