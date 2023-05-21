@@ -26,12 +26,6 @@ jobs:
     - name: Setup platformio cache
       run: export PLATFORMIO_CACHE_DIR=./.pio/cache
 
-    - name: DEBUG
-      run: ls -al
-
-    - name: DEBUG
-      run: ls -al ./.pio
-
     - name: Fetch cached build
       id: cache-primes
       uses: actions/cache@v3
@@ -43,6 +37,13 @@ jobs:
       run: pio run --verbose --environment ${{ matrix.target }}
       env:
         DOTENV: ${{ secrets.DOTENV }}
+
+    - name: DEBUG
+      run: ls -al
+  
+    - name: DEBUG
+      run: ls -al ./.pio
+  
 
     - name: Cache build
       uses: actions/cache/save@v3
