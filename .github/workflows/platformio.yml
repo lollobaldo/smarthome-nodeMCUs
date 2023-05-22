@@ -39,7 +39,8 @@ jobs:
         DOTENV: ${{ secrets.DOTENV }}
 
     - name: "Copy Firmware: ${{ matrix.target }}"
-      run: cp .pio/build/${{ matrix.target }}/firmware.bin firmware_${{ matrix.target }}.bin
+      run: mkdir ${{ matrix.target }} &&
+        cp .pio/build/${{ matrix.target }}/firmware.bin ${{ matrix.target }}/firmware_${{ matrix.target }}.bin
 
     - name: "Upload Firmware: ${{ matrix.target }}"
       uses: actions/upload-artifact@v3
@@ -76,7 +77,7 @@ jobs:
     - name: Release Firmware
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ./firmware_*.bin
+        artifacts: ./*/*.bin
         generateReleaseNotes: true
         artifactErrorsFailBuild: true
 
