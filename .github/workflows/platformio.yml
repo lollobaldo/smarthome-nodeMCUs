@@ -45,7 +45,7 @@ jobs:
     - name: "Upload Firmware: ${{ matrix.target }}"
       uses: actions/upload-artifact@v3
       with: 
-        name: Firmware ${{ matrix.target }}
+        name: firmware_${{ matrix.target }}
         path: firmware_${{ matrix.target }}.bin
 
     # - name: Compile Filesystem
@@ -77,7 +77,7 @@ jobs:
     - name: Release Firmware
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ./firmware_*.bin
+        artifacts: ./firmware_*/firmware_*.bin
         generateReleaseNotes: true
         artifactErrorsFailBuild: true
 
