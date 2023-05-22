@@ -77,7 +77,7 @@ jobs:
     - name: Release Firmware
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ./*/*.bin
+        artifacts: ./*/firmware_*.bin
         generateReleaseNotes: true
         artifactErrorsFailBuild: true
 
