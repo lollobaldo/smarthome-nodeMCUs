@@ -72,7 +72,7 @@ jobs:
       uses: actions/download-artifact@v3
 
     - name: Debug
-      run: ls -al
+      run: ls -al ./*
 
     - name: Release Firmware
       uses: ncipollo/release-action@v1
