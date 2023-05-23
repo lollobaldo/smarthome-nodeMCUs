@@ -5,13 +5,14 @@
 
 #include <Arduino.h>
 #include <PubSubClient.h>
+#include <Timer.h>
 
 #include <string>
 // using namespace std;
 
 
 #ifndef CLIENT_NAME
-    #define CLIENT_NAME "ESP--anonymous"
+    #error message "CLIENT_NAME is not defined"
 #endif
 const char* clientName = "ESP--plants-" CLIENT_NAME;
 
@@ -23,6 +24,10 @@ std::vector<const char*> subscriptions{ channelCommands };
 
 const int sensorPin = A0;
 const long probingTime = 0.5*60*1000L; // 30 seconds
+
+Timer t;
+
+const int ledPin = D0;
 
 void callback(char* topic, byte* payload, unsigned int length) {
     DebugPrint("Message arrived in topic ");
@@ -47,23 +52,20 @@ void sense() {
     mqtt::client.publish(channelOutput, ch, true);
 }
 
-unsigned long lastRun = millis() ;
-inline void mainLoop() {
-  if (millis() - lastRun >= probingTime) {
-    sense();
-    lastRun = millis();
-  }
-}
-
 void setup() {
     Serial.begin(115200);
     DebugPrintln("Booting");
     wifi::setup(clientName);
     mqtt::setup(clientName, subscriptions, callback);
+    t.every(probingTime, []() {sense();});
+    pinMode(LED_BUILTIN, OUTPUT);
+    t.oscillate(LED_BUILTIN, 5000, HIGH);
+    // pinMode(D4, OUTPUT);
+    // t.oscillate(D4, 2000, HIGH);
 }
 
 void loop() {
     wifi::loop();
     mqtt::loop();
-    mainLoop();
+    t.update();
 }

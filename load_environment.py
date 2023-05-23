@@ -9,6 +9,15 @@ if(dotenv == ""):
     with open('.env') as f:
         dotenv = f.read()
 
+if('CI' not in os.environ):
+    print(f"DEBUG enabled.")
+    env.Append(CPPDEFINES=[
+        "MYDEBUG",
+        # "DEBUG_ESP_HTTP_CLIENT",
+        ("CORE_DEBUG_LEVEL", 5),
+        # ("DEBUG_ESP_PORT", "Serial"),
+    ])
+
 for line in dotenv.splitlines():
     if line.startswith('#') or not line.strip():
         continue
