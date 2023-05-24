@@ -59,7 +59,7 @@ void setup() {
     mqtt::setup(clientName, subscriptions, callback);
     t.every(probingTime, []() {sense();});
     pinMode(LED_BUILTIN, OUTPUT);
-    t.oscillate(LED_BUILTIN, 5000, HIGH);
+    t.oscillate(LED_BUILTIN, 3000, HIGH);
     // pinMode(D4, OUTPUT);
     // t.oscillate(D4, 2000, HIGH);
 }
