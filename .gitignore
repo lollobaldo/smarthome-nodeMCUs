@@ -4,8 +4,11 @@
 .vscode/launch.json
 .vscode/ipch
 
+lib/timer/examples
+
 __pycache__
 log.txt
 .env
 
 mind.md
+

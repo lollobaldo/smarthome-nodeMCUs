@@ -13,9 +13,10 @@ if('CI' not in os.environ):
     print(f"DEBUG enabled.")
     env.Append(CPPDEFINES=[
         "MYDEBUG",
-        # "DEBUG_ESP_HTTP_CLIENT",
+        "DEBUG_ESP_HTTP_UPDATE",
         ("CORE_DEBUG_LEVEL", 5),
-        # ("DEBUG_ESP_PORT", "Serial"),
+        "DEBUG_ESP_HTTP_CLIENT",
+        ("DEBUG_ESP_PORT", "Serial"),
     ])
 
 for line in dotenv.splitlines():
