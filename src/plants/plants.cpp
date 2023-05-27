@@ -59,7 +59,7 @@ void setup() {
     mqtt::setup(clientName, subscriptions, callback);
     t.every(probingTime, []() {sense();});
     pinMode(LED_BUILTIN, OUTPUT);
-    t.oscillate(LED_BUILTIN, 1000, HIGH);
+    t.oscillate(LED_BUILTIN, 3000, HIGH);
 
     uint32_t realSize = ESP.getFlashChipRealSize();
     uint32_t ideSize = ESP.getFlashChipSize();
