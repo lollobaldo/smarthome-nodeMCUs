@@ -28,10 +28,11 @@
     #define AP_PSWD "AP123456"
 #endif
 
-#define VERSION "0.0.16"
-//https://github.com/lollobaldo/smarthome-nodeMCUs/releases/download/v0.0.12/firmware_plants.bin
+#ifndef VERSION
+    #error "VERSION is not defined"
+#endif
+
 #define RELEASE_URL "https://github.com/lollobaldo/smarthome-nodeMCUs/releases/latest"
-// #define RELEASE_URL "http://192.168.0.4:8120/esp32playground/"
 
 #define FIRMWARE_NAME "firmware_" CLIENT_NAME ".bin"
 #define OTA_POOLING_INTERVAL 30000

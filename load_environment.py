@@ -19,6 +19,10 @@ if('CI' not in os.environ):
         # ("DEBUG_ESP_PORT", "Serial"),
     ])
 
+version = os.environ.get("GITHUB_REF_NAME", "v9.9.9")[1:] # Remove leading "v"
+print(f"Setting VERSION: {version}")
+env.Append(CPPDEFINES=[("VERSION", env.StringifyMacro(version))])
+
 for line in dotenv.splitlines():
     if line.startswith('#') or not line.strip():
         continue
@@ -27,6 +31,5 @@ for line in dotenv.splitlines():
     env.Append(CPPDEFINES=[
         (key, env.StringifyMacro(value)),
     ])
-
 
 print("Loaded all.")
