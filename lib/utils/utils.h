@@ -11,16 +11,16 @@
 
 #if defined MYDEBUG && defined ARDUINO
     #include <Arduino.h>
-    #define DebugPrint(a) (Serial.print(a))
-    #define DebugPrintln(a) (Serial.println(a))
-#elif defined UNIT_TEST
-    #include <iostream>
-    #define DebugPrint(a) (std::cout << (a))
-    #define DebugPrintln(a) (std::cout << (a) << std::endl)
+    #define DebugPrint(...) (Serial.print(__VA_ARGS__))
+    #define DebugPrintln(...) (Serial.println(__VA_ARGS__))
 #else
     #define DebugPrint(a)
     #define DebugPrintln(a)
 #endif
+
+const float scale(float x, float in_min, float in_max, float out_min = 0, float out_max = 100);
+
+const char* copyFromBytes(const byte* bytes, unsigned int length);
 
 const char* concat(const char* s1, const char* s2);
 const char* concat(const char* s1, const char* s2, const char* s3);

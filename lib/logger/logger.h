@@ -9,7 +9,7 @@ enum LogLevel { INFO, LOG, WARN, ERROR };
 
 class Logger {
     public:
-        Logger(const char* topic);
+        Logger(const char* prefix);
         void info(const char* message);
         void log(const char* message);
         void warn(const char* message);
@@ -19,4 +19,5 @@ class Logger {
         void log(const char* message, bool retained);
     private:
         const char* topic;
+        const char* prefix;
 };

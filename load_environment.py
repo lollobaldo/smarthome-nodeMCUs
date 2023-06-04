@@ -19,7 +19,7 @@ if('CI' not in os.environ):
         # ("DEBUG_ESP_PORT", "Serial"),
     ])
 
-version = os.environ.get("GITHUB_REF_NAME", "v9.9.9")[1:] # Remove leading "v"
+version = os.environ.get("GITHUB_REF_NAME", "v0.0.1")[1:] # Remove leading "v"
 print(f"Setting VERSION: {version}")
 env.Append(CPPDEFINES=[("VERSION", env.StringifyMacro(version))])
 

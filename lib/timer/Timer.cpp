@@ -28,12 +28,13 @@
 #endif
 
 #include "Timer.h"
+#include "functional"
 
 Timer::Timer(void)
 {
 }
 
-int8_t Timer::every(unsigned long period, void (*callback)(), int repeatCount)
+int8_t Timer::every(unsigned long period, std::function<void()> callback, int repeatCount)
 {
 	int8_t i = findFreeEventIndex();
 	if (i == -1) return -1;
@@ -47,12 +48,12 @@ int8_t Timer::every(unsigned long period, void (*callback)(), int repeatCount)
 	return i;
 }
 
-int8_t Timer::every(unsigned long period, void (*callback)())
+int8_t Timer::every(unsigned long period, std::function<void()> callback)
 {
 	return every(period, callback, -1); // - means forever
 }
 
-int8_t Timer::after(unsigned long period, void (*callback)())
+int8_t Timer::after(unsigned long period, std::function<void()> callback)
 {
 	return every(period, callback, 1);
 }

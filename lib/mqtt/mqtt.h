@@ -3,14 +3,11 @@
 
 #include <vector>
 
-typedef void callbackType (char* topic, byte* payload, unsigned int length);
-
 namespace mqtt {
-    extern std::vector<const char*> topics;
-    extern const char* cLog;
+    typedef void (*callbackPointer_t) (const char* topic, const char* payload);
 
     extern PubSubClient client;
-
-    void setup(const char* clientName, std::vector<const char*> subscriptions, callbackType callback);
+    void setup(const char* clientName);
+    void subscribe(const char* topic, callbackPointer_t callback);
     void loop();
 }

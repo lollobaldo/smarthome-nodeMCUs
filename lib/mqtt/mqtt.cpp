@@ -12,36 +12,43 @@
     #error "Unsupported platform"
 #endif
 
-#include <vector>
+#include <unordered_map>
 #include <string>
 
 #ifndef MQTT_USER
     #error "MQTT_USER is not defined"
 #endif
 
+#define MQTT_SERVER "mqtt.flespi.io"
+#define MQTT_PORT 1883
+#define MQTT_PASSWORD ""
+
+#ifndef CLIENT_NAME
+    #error message "CLIENT_NAME is not defined"
+#endif
+
+#define LOGS_CHANNEL "logs/" CLIENT_NAME
+
 namespace mqtt {
-    const char* server = "mqtt.flespi.io";
-    const int port = 1883;
-    const char* name;
-    const char* user = MQTT_USER;
-    const char* password = "";
+    const char* clientName;
 
-    std::vector<const char*> topics;
-
-    const char* cLog;
+    std::unordered_map<std::string, callbackPointer_t> callbacks;
 
     const char* connectMessage;
     const char* willTopic;
     const char* willMessage;
 
-    byte willQoS = 0;
-    boolean willRetain = true;
+    constexpr byte willQoS = 0;
+    constexpr boolean willRetain = true;
 
     WiFiClient wifiClient;
     PubSubClient client(wifiClient);
 
     boolean connect() {
-        return client.connect(name, user, password, willTopic, willQoS, willRetain, willMessage);
+        DebugPrint("Connecting to MQTT as ");
+        DebugPrint(clientName);
+        DebugPrint("... ");
+        return client.connect(clientName, MQTT_USER, MQTT_PASSWORD, LOGS_CHANNEL, 0, true, willMessage);
     }
 
     void reconnect() {
@@ -52,28 +59,48 @@ namespace mqtt {
             if (connect()) {
                 DebugPrintln("connected");
                 // Once connected, publish an announcement and resubscribe
-                client.publish(cLog, connectMessage);
-                for (auto &t: topics) {
-                    client.subscribe(t);
-                }
+                // client.publish(cLog, connectMessage);
+                // for (auto &t: topics) {
+                //     client.subscribe(t);
+                // }
             } else {
-                DebugPrint("failed, rc=");
+                DebugPrint("ERROR, rc: ");
                 DebugPrint(client.state());
-                DebugPrintln(" try again in 3 seconds");
+                DebugPrintln(". Will try again in 3 seconds");
                 // Wait 3 seconds before retrying
                 delay(3000);
             }
         }
     }
 
-    void setup(const char* clientName, std::vector<const char*> subscriptions, callbackType callback) {
-        name = clientName;
-        topics = subscriptions;
+    void handleCallback(char* topic, byte* payload, unsigned int length) {
+        DebugPrint("Routing message in topic: ");
+        DebugPrintln(topic);
+        std::string topic_s(topic);
+        if (callbacks.find(topic_s) == callbacks.end()) {
+            DebugPrint("No callback for topic ");
+            DebugPrintln(topic);
+            return;
+        }
+        const char* message = copyFromBytes(payload, length);
+        callbacks[topic](topic, message);
+    }
+
+    void subscribe(const char* topic, callbackPointer_t callback) {
+        DebugPrint("Subscribing to topic: ");
+        DebugPrintln(topic);
+        std::string topic_s(topic);
+        callbacks[topic_s] = callback;
+        client.subscribe(topic);
+    }
+
+    void setup(const char* cn) {
+        clientName = cn;
         connectMessage = concat("INF: ", clientName, " connected.");
         willMessage = concat("ERR: ", clientName, " disconnected");
-        cLog = concat("logs/", subscriptions[0]);
-        client.setServer(server, port);
-        client.setCallback(callback);
+        client.setServer(MQTT_SERVER, MQTT_PORT);
+        client.setCallback(handleCallback);
+        reconnect();
     }
 
     void loop() {

@@ -24,6 +24,7 @@
 #define Event_h
 
 #include <inttypes.h>
+#include <functional>
 
 #define EVENT_NONE 0
 #define EVENT_EVERY 1
@@ -40,7 +41,7 @@ public:
   int repeatCount;
   uint8_t pin;
   uint8_t pinState;
-  void (*callback)(void);
+  std::function<void()> callback;
   unsigned long lastEventTime;
   int count;
 };

@@ -2,6 +2,6 @@
 
 #include <Arduino.h>
 
-namespace wifi {
+namespace ota {
     void setup(const char* hostname);
 }

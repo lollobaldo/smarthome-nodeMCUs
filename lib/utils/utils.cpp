@@ -7,6 +7,17 @@
 
 #include "utils.h"
 
+const float scale(float x, float in_min, float in_max, float out_min /*-0*/, float out_max /*=100*/) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+const char* copyFromBytes(const byte* bytes, unsigned int length) {
+    char* message = new char[length + 1];
+    memcpy(message, bytes, length);
+    message[length] = '\0';
+    return message;
+}
+
 // IMPORTANT: need to allocate memory for the array
 const char* concat(const char* s1, const char* s2) {
     std::string s = std::string(s1) + s2;

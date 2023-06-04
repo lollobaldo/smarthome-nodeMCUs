@@ -3,7 +3,13 @@
 
 #include "logger.h"
 
-static char* loglevel2String(LogLevel ll) {
+#ifndef CLIENT_NAME
+    #error message "CLIENT_NAME is not defined"
+#endif
+
+#define LOGS_CHANNEL "logs/" CLIENT_NAME
+
+static const char* loglevel2String(LogLevel ll) {
     switch(ll) {
         case LogLevel::INFO: return "INF: ";
         case LogLevel::LOG: return "LOG: ";
@@ -13,8 +19,8 @@ static char* loglevel2String(LogLevel ll) {
     }
 }
 
-Logger::Logger(const char* t) {
-    topic = t;
+Logger::Logger(const char* p) {
+    prefix = p;
 };
 
 void Logger::log(LogLevel ll, const char* m, bool r) {
@@ -50,10 +56,11 @@ void Logger::error(const char* m) {
 void Logger::log(const char* message, bool retained) {
     if (mqtt::client.connected()) {
         DebugPrint("[");
-        DebugPrint(topic);
+        DebugPrint(LOGS_CHANNEL);
         DebugPrint("]");
         DebugPrintln(message);
-        mqtt::client.publish(topic, message, retained);
+        const char* formattedMessage = concat(prefix, message);
+        mqtt::client.publish(LOGS_CHANNEL, formattedMessage, retained);
     } else {
         DebugPrintln("Client not connected");
     }
