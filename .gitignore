@@ -9,6 +9,9 @@ lib/timer/examples
 __pycache__
 log.txt
 .env
+*.ipynb
 
 mind.md
+
+influxdata_*
 

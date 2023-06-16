@@ -1,116 +1,94 @@
+#include <commands.h>
 #include <logger.h>
 #include <mqtt.h>
+#include <otaHandler.h>
+#include <telemetry.h>
 #include <utils.h>
-#include <wifi.h>
+#include <wifiHandler.h>
 
+#include <Adafruit_Sensor.h>
 #include <Arduino.h>
-#include <DHTesp.h>
+#include <DHT.h>
+#include <DHT_U.h>
 #include <PubSubClient.h>
+#include <Timer.h>
 
 #include <string>
-using namespace std;
 
-const char* clientName = "ESP--sensors";
+#ifndef CLIENT_NAME
+    #error message "CLIENT_NAME is not defined"
+#endif
+#define CLIENT_NAME_FULL "ESP--sensors-" CLIENT_NAME
 
-const int dhtPin = D4;
-const DHTesp::DHT_MODEL_t dhtType = DHTesp::DHT11;
-// DHT dht(dhtPin, dhtType);
-DHTesp dht;
+constexpr int probingInterval = 0.5*60*1000L; // 30 seconds
+constexpr int dhtPin = D5;
+constexpr int dhtType = DHT22;
+constexpr const char* sensorId = "s1";
 
-const long probingTime = 5*60*1000L;
+DHT_Unified dht(dhtPin, dhtType);
 
-const char* channelCommands = "sensors/commands";
-const char* channelLog = "logs/sensors";
-const char* channelTemperature = "sensors/temperature";
-const char* channelHumidity = "sensors/humidity";
-const char* channelHeatIndex = "sensors/heatIndex";
+Timer timer;
+Logger logger("sensors.cpp");
 
-void sense() {
-    // // Reading temperature or humidity takes about 250 milliseconds!
-    // // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-    // float h = dht.readHumidity();
-    // // Read temperature as Celsius (the default)
-    // float t = dht.readTemperature();
+void probe_temperature() {
+    sensors_event_t event;
+    dht.temperature().getEvent(&event);
+    DebugPrint(F("Temperature: "));
+    DebugPrint(event.temperature);
+    DebugPrintln(F("°C"));
+    Point point("sensors");
+    point.addTag("sensorType", "temperature");
+    point.addTag("sensorId", sensorId);
+    point.addField("temperature", event.temperature);
+    telemetry::sendPoint(point);
+}
 
-    float h = dht.getHumidity();
-    float t = dht.getTemperature();
-
-    DebugPrint(h);
-    DebugPrint(t);
-
-    // Check if any reads failed and exit early (to try again).
-    if (isnan(h) || isnan(t)) {
-        Serial.println(F("Failed to read from DHT sensor!"));
-        return;
-    }
-
-    // Compute heat index in Celsius (isFahreheit = false)
-    float hic = dht.computeHeatIndex(t, h, false);
-
+void probe_humidity() {
+    sensors_event_t event;
+    dht.humidity().getEvent(&event);
     DebugPrint(F("Humidity: "));
-    DebugPrint(h);
-    DebugPrint(F("%  Temperature: "));
-    DebugPrint(t);
-    DebugPrint(F("°C Heat index: "));
-    DebugPrint(hic);
-    DebugPrintln(F("°F"));
+    DebugPrint(event.relative_humidity);
+    DebugPrintln(F("%"));
 
-    // Convert to char* and publish. NOTE: 2sf.
-    char ch[7];
-    snprintf(ch, sizeof ch, "%f", h);
-    mqtt::client.publish(channelHumidity, ch, true);
-    char ct[7];
-    snprintf(ct, sizeof ct, "%f", t);
-    mqtt::client.publish(channelTemperature, ct, true);
-    char chic[7];
-    snprintf(chic, sizeof chic, "%f", hic);
-    mqtt::client.publish(channelHeatIndex, chic, true);
-}
-
-void callback(char* topic, byte* payload, unsigned int length) {
-    DebugPrint("Message arrived in topic ");
-    DebugPrint(topic);
-    DebugPrint(": ");
-    // add string terminator
-    char* message = (char*) payload;
-    message[length] = '\0';
-    DebugPrintln(message);
-
-    // Copy topic and payload as they get overwritten
-    const string channel = string(topic);
-    // const string command = string(message);
-    char* command = new char[strlen(message) + 1];
-    strncpy(command, message, strlen(message) + 1 );
-
-
-    if (channel == channelCommands) {
-        DebugPrintln("Command received");
-        sense();
-    }
-
-    // Deallocate memory
-    delete command;
-}
-
-unsigned long lastRun = millis() ;
-inline void mainLoop() {
-  if (millis() - lastRun >= probingTime) {
-    sense();
-    lastRun = millis();
-  }
+    Point point("sensors");
+    point.addTag("sensorType", "humidity");
+    point.addTag("sensorId", sensorId);
+    point.addField("humidity", event.relative_humidity);
+    telemetry::sendPoint(point);
 }
 
 void setup() {
     Serial.begin(115200);
     DebugPrintln("Booting");
-    wifi::setup(clientName);
-    mqtt::setup(clientName, channelCommands, callback);
-    // dht.begin();
-    dht.setup(dhtPin, dhtType);
+    wifi::setup(CLIENT_NAME_FULL);
+    mqtt::setup(CLIENT_NAME);
+    commands::setup(CLIENT_NAME);
+    telemetry::setup(CLIENT_NAME);
+    ota::setup(CLIENT_NAME);
+    dht.begin();
+    timer.every(probingInterval, probe_temperature);
+    timer.every(probingInterval, probe_humidity);
+
+    sensor_t sensor;
+    dht.temperature().getSensor(&sensor);
+    Serial.println(F("------------------------------------"));
+    Serial.println(F("Temperature Sensor"));
+    Serial.print  (F("Sensor Type: ")); Serial.println(sensor.name);
+    Serial.print  (F("Max Value:   ")); Serial.print(sensor.max_value); Serial.println(F("°C"));
+    Serial.print  (F("Min Value:   ")); Serial.print(sensor.min_value); Serial.println(F("°C"));
+    Serial.print  (F("Resolution:  ")); Serial.print(sensor.resolution); Serial.println(F("°C"));
+    Serial.println(F("------------------------------------"));
+    // Print humidity sensor details.
+    dht.humidity().getSensor(&sensor);
+    Serial.println(F("Humidity Sensor"));
+    Serial.print  (F("Sensor Type: ")); Serial.println(sensor.name);
+    Serial.print  (F("Max Value:   ")); Serial.print(sensor.max_value); Serial.println(F("%"));
+    Serial.print  (F("Min Value:   ")); Serial.print(sensor.min_value); Serial.println(F("%"));
+    Serial.print  (F("Resolution:  ")); Serial.print(sensor.resolution); Serial.println(F("%"));
+    Serial.println(F("------------------------------------"));
 }
 
 void loop() {
-    wifi::loop();
     mqtt::loop();
-    mainLoop();
+    timer.update();
 }

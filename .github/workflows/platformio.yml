@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [esp32playground, plants]
+        target: [sensors]
+        # target: [esp8266playground, esp32playground, plants, sensors]
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
