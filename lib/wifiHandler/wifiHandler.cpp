@@ -31,6 +31,14 @@
 namespace wifi {
     WiFiManager wm;
 
+    IPAddress ip() {
+        return WiFi.localIP();
+    }
+
+    String mac() {
+        return WiFi.macAddress();
+    }
+
     void setup(const char* hostname) {
         wm.setHostname(hostname);
 

@@ -1,5 +1,6 @@
 #include "mqtt.h"
 
+#include <logger.h>
 #include <utils.h>
 
 #if defined(ESP8266)
@@ -30,6 +31,8 @@
 #define LOGS_CHANNEL "logs/" CLIENT_NAME
 
 namespace mqtt {
+    Logger logger("mqtt.cpp");
+    
     const char* clientName;
 
     std::unordered_map<std::string, callbackPointer_t> callbacks;
@@ -58,6 +61,7 @@ namespace mqtt {
             // Attempt to connect
             if (connect()) {
                 DebugPrintln("connected");
+                logger.log("MQTT connected");
                 // Once connected, publish an announcement and resubscribe
                 // client.publish(cLog, connectMessage);
                 // for (auto &t: topics) {

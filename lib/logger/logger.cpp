@@ -1,4 +1,4 @@
-#include <mqtt.h>
+#include <telemetry.h>
 #include <utils.h>
 
 #include "logger.h"
@@ -11,10 +11,10 @@
 
 static const char* loglevel2String(LogLevel ll) {
     switch(ll) {
-        case LogLevel::INFO: return "INF: ";
-        case LogLevel::LOG: return "LOG: ";
-        case LogLevel::WARN: return "WRN: ";
-        case LogLevel::ERROR: return "ERR: ";
+        case LogLevel::INFO: return "INF";
+        case LogLevel::LOG: return "LOG";
+        case LogLevel::WARN: return "WRN";
+        case LogLevel::ERROR: return "ERR";
         default: return "";
     }
 }
@@ -23,76 +23,28 @@ Logger::Logger(const char* p) {
     prefix = p;
 };
 
-void Logger::log(LogLevel ll, const char* m, bool r) {
-    const char* message = concat(loglevel2String(ll), m);
-    return log(message, r);
+void Logger::info(const char* message) {
+    return log(LogLevel::INFO, message);
 }
 
-void Logger::log(LogLevel ll, const char* m) {
-    const char* message = concat(loglevel2String(ll), m);
-    return log(message, true);
+void Logger::log(const char* message) {
+    return log(LogLevel::LOG, message);
 }
 
-void Logger::info(const char* m) {
-    const char* message = concat(loglevel2String(LogLevel::INFO), m);
-    return log(message, true);
+void Logger::warn(const char* message) {
+    return log(LogLevel::WARN, message);
 }
 
-void Logger::log(const char* m) {
-    const char* message = concat(loglevel2String(LogLevel::LOG), m);
-    return log(message, true);
+void Logger::error(const char* message) {
+    return log(LogLevel::ERROR, message);
 }
 
-void Logger::warn(const char* m) {
-    const char* message = concat(loglevel2String(LogLevel::WARN), m);
-    return log(message, true);
+void Logger::log(const LogLevel logLevel, const char* message) {
+    const char* ll = loglevel2String(logLevel);
+    DebugPrint(ll);
+    DebugPrint(" [");
+    DebugPrint(prefix);
+    DebugPrint("] ");
+    DebugPrintln(message);
+    telemetry::sendLog(loglevel2String(logLevel), prefix, message);
 }
-
-void Logger::error(const char* m) {
-    const char* message = concat(loglevel2String(LogLevel::ERROR), m);
-    return log(message, true);
-}
-
-void Logger::log(const char* message, bool retained) {
-    if (mqtt::client.connected()) {
-        DebugPrint("[");
-        DebugPrint(LOGS_CHANNEL);
-        DebugPrint("]");
-        DebugPrintln(message);
-        const char* formattedMessage = concat(prefix, message);
-        mqtt::client.publish(LOGS_CHANNEL, formattedMessage, retained);
-    } else {
-        DebugPrintln("Client not connected");
-    }
-}
-
-// // Deprecated. Backward compatibility only
-// namespace logger {
-//     bool log(LogLevel ll, const char* t, const char* m, bool r) {
-//         const char* message = concat(loglevel2String(ll), m);
-//         return log(t, message, r);
-//     }
-
-//     bool log(LogLevel ll, const char* m) {
-//         const char* message = concat(loglevel2String(ll), m);
-//         return log(mqtt::cLog, message, true);
-//     }
-
-//     bool log(const char* m) {
-//         const char* message = concat(loglevel2String(LogLevel::INFO), m);
-//         return log(mqtt::cLog, message, true);
-//     }
-
-//     bool log(const char* topic, const char* message, bool retained) {
-//         if (mqtt::client.connected()) {
-//             DebugPrint("[");
-//             DebugPrint(topic);
-//             DebugPrint("]");
-//             DebugPrintln(message);
-//             return mqtt::client.publish(topic, message, retained);
-//         } else {
-//             DebugPrintln("Client not connected");
-//             return false;
-//         }
-//     }
-// }

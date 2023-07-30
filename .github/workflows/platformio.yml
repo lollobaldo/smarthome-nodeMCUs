@@ -2,7 +2,7 @@ name: Platformio
 on: [push, workflow_dispatch]
 
 env:
-  TARGET: esp32playground # Must match the value after colon in platformio.ini (line 4: [env:nodemcu-32s])
+  TARGET: esp32playground # Must match the value after colon in platformio.ini
   PLATFORMIO_CACHE_DIR: ./.pio/cache
 jobs:
   build:
