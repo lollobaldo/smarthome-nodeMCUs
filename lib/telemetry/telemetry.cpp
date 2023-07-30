@@ -84,12 +84,15 @@ namespace telemetry {
         point.addField("ip", wifi::ip().toString());
         point.addField("mac", wifi::mac());
         point.addField("flash_size", ESP.getFlashChipSize());
-        point.addField("flash_size_real", ESP.getFlashChipRealSize());
-        point.addField("flash_id", ESP.getFlashChipId());
         point.addField("flash_speed", ESP.getFlashChipSpeed());
+        
+        // ESP8266 only API
+#if defined(ESP8266)
+        point.addField("flash_id", ESP.getFlashChipId());
         point.addField("free_heap", ESP.getFreeHeap());
         point.addField("last_boot_reason", ESP.getResetReason());
         point.addField("vcc", ESP.getVcc());
+#endif
         sendPoint(point);
     }
 
